@@ -1,0 +1,28 @@
+<form [formGroup]="agents" (ngSubmit)="onSubmit()">
+  <div>
+    <label for="lastName">Nom</label>
+    <input id="lastName" formControlName="lastName" />
+  </div>
+  <div>
+    <label for="firstName">Prénom</label>
+    <input id="firstName" formControlName="firstName" />
+  </div>
+  <div>
+    <label for="note">Commentaire</label>
+    <textarea id="note" formControlName="note"></textarea>
+  </div>
+  <button type="submit">Envoyer</button>
+</form>
+
+@if(forms$ | async; as forms) { @if(forms.length > 0) {
+
+<h3>Formulaires soumis :</h3>
+<ul>
+  @for (form of forms; track $index) {
+  <li>{{ form.lastName }} {{ form.firstName }} - {{ form.note }}</li>
+  }
+</ul>
+
+@if (errorMessage) {
+<p>{{ errorMessage }}</p>
+} }}
