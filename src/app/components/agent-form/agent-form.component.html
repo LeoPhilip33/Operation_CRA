@@ -1,31 +1,29 @@
-<form [formGroup]="agents" (ngSubmit)="onSubmit()">
-  <div>
-    <label for="lastName">Nom</label>
-    <input id="lastName" formControlName="lastName" />
-  </div>
-  <div>
-    <label for="firstName">Prénom</label>
-    <input id="firstName" formControlName="firstName" />
-  </div>
-  <div>
-    <label for="note">Commentaire</label>
-    <textarea id="note" formControlName="note"></textarea>
-  </div>
-  <button type="submit">Envoyer</button>
-</form>
+<div class="form-container">
+  <h1>Ajouter des agents</h1>
+  <form [formGroup]="agents" (ngSubmit)="onSubmit()">
+    <div>
+      <input id="lastName" formControlName="lastName" placeholder="Nom" />
+      <input id="firstName" formControlName="firstName" placeholder="Prénom" />
+    </div>
+    <textarea
+      id="note"
+      formControlName="note"
+      placeholder="Commentaires.."
+    ></textarea>
+    <button type="submit">Envoyer</button>
+  </form>
 
-@if(agentsData$ | async; as agents) { @if(agents.length > 0) {
+  @if(agentsData$ | async; as agents) { @if(agents.length > 0) {
 
-<h3>Agents:</h3>
-<ul>
-  @for (agent of agents; track $index) {
-  <li>
-    {{ agent.id }} -- {{ agent.lastName }} {{ agent.firstName }} -
-    {{ agent.note }}
-  </li>
-  }
-</ul>
-
-@if (errorMessage) {
-<p>{{ errorMessage }}</p>
-} }}
+  <h3>Agents:</h3>
+  <div class="agents-container">
+    @for (agent of agents; track $index) {
+    <div>
+      <p>{{ agent.lastName }} {{ agent.firstName }}</p>
+    </div>
+    }
+  </div>
+  @if (errorMessage) {
+  <p>{{ errorMessage }}</p>
+  } }}
+</div>

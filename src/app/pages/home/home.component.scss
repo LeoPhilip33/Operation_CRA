@@ -1,0 +1,11 @@
+.container-page {
+    width: auto;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 2rem;
+
+    app-calendar {
+        width: 100%;
+    }
+}

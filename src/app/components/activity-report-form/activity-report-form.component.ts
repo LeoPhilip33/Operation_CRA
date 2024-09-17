@@ -11,15 +11,16 @@ import { ActivityReport } from '../../interfaces/activity-report';
 import { Store } from '@ngrx/store';
 import { addActivityReport } from '../../store/agent.actions';
 import { Agent } from '../../interfaces/agent';
+import { RouterModule } from '@angular/router';
 
 @Component({
-  selector: 'app-activity-report',
+  selector: 'app-activity-report-form',
   standalone: true,
-  imports: [ReactiveFormsModule, CommonModule],
-  templateUrl: './activity-report.component.html',
-  styleUrl: './activity-report.component.scss',
+  imports: [ReactiveFormsModule, CommonModule, RouterModule],
+  templateUrl: './activity-report-form.component.html',
+  styleUrl: './activity-report-form.component.scss',
 })
-export class ActivityReportComponent {
+export class ActivityReportFormComponent {
   activityReport: FormGroup;
   storedActivityReport$: Observable<ActivityReport[]>;
   storedAgents$: Observable<Agent[]>;

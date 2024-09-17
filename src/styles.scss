@@ -1,1 +1,26 @@
-/* You can add global styles to this file, and also import other style files */
+body {
+    margin: 0;
+}
+
+.container-page {
+    width: 100%;
+    min-height: 100vh;
+}
+
+button {
+    cursor: pointer;
+    padding: 1rem;
+    border-radius: 0.5rem;
+    border: 0;
+    background-color: black;
+    color: white;
+    transition: 0.3s;
+    border: 0.2rem solid black;
+
+    &:hover {
+        background-color: white;
+        color: black;
+        transition: 0.3s;
+        border: 0.2rem solid black;
+    }
+}

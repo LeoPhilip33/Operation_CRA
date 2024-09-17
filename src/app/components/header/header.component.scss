@@ -1,0 +1,41 @@
+.header-container {
+    position: fixed;
+    background-color: #CC010F;
+    color: white;
+    width: 100%;
+    padding: 0.5rem;
+
+    a {
+        cursor: pointer;
+        padding: 1rem 2rem;
+        text-decoration: none;
+        position: relative;
+        display: inline-block;
+        color: white;
+        transition: color 0.3s ease;
+
+        &::after {
+            content: '';
+            position: absolute;
+            left: 0;
+            bottom: 0;
+            width: 0;
+            height: 2px;
+            background-color: white;
+            transition: width 0.3s ease;
+        }
+
+        &:hover {
+            color: #FFF;
+        }
+
+        &.active {
+            font-weight: bold;
+            border-bottom: 2px solid white;
+        }
+
+        &:hover::after {
+            width: 100%;
+        }
+    }
+}

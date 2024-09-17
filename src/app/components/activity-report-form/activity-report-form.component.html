@@ -1,0 +1,47 @@
+<div class="form-container">
+  <h1>Reporter une activité</h1>
+  @if(storedAgents$ | async; as agents) { @if(agents.length > 0) {
+  <form [formGroup]="activityReport" (ngSubmit)="onSubmit()">
+    <div>
+      <select name="agents">
+        <option value="">-- Sélectionner un agent --</option>
+        @for (agent of agents; track $index) {
+        <option [value]="agent.id">
+          {{ agent.lastName }} {{ agent.firstName }}
+        </option>
+        }
+      </select>
+    </div>
+
+    <input id="project" formControlName="project" placeholder="Projet" />
+    <input type="date" id="startDate" formControlName="startDate" />
+    <input type="date" id="endDate" formControlName="endDate" />
+    <textarea
+      id="activity"
+      formControlName="activity"
+      placeholder="Elements réalisées"
+    ></textarea>
+    <button [disabled]="activityReport.invalid" type="submit">Envoyer</button>
+  </form>
+
+  }@else {
+  <p>Vous avez aucun agent, commencez par en créer un.</p>
+  <button routerLink="/agents">Créer mon agent</button>
+  } } @if(storedActivityReport$ | async; as activities) { @if(activities.length
+  > 0) {
+
+  <h3>Stored Activities:</h3>
+  <ul>
+    @for (activity of activities; track $index) {
+    <li>
+      {{ activity.activity }} - {{ activity.startDate }}
+      {{ activity.endDate }} -
+      {{ activity.project }}
+    </li>
+    }
+  </ul>
+
+  @if (errorMessage) {
+  <p>{{ errorMessage }}</p>
+  } }}
+</div>

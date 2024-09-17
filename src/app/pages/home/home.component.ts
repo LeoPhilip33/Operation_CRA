@@ -1,12 +1,11 @@
 import { Component } from '@angular/core';
 import { CalendarComponent } from '../../components/calendar/calendar.component';
-import { AgentFormComponent } from '../../components/agent-form/agent-form.component';
-import { ActivityReportComponent } from '../../components/activity-report/activity-report.component';
+import { HeaderComponent } from '../../components/header/header.component';
 
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [CalendarComponent, AgentFormComponent, ActivityReportComponent],
+  imports: [CalendarComponent, HeaderComponent],
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.scss'],
 })

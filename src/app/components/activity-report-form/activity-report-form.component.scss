@@ -5,36 +5,18 @@
     form {
         width: 100%;
 
-        div {
-            display: flex;
-            gap: 1rem;
+        select {
+            width: 100%;
         }
+
 
         input {
             padding: 1rem;
-            width: 50%;
 
         }
 
         textarea {
-
             padding: 1rem;
-        }
-
-        button {
-            padding: 1rem;
-            border-radius: 0.5rem;
-            border: 0;
-            background-color: black;
-            color: white;
-            transition: 0.3s;
-
-            &:hover {
-                background-color: white;
-                color: black;
-                transition: 0.3s;
-                border: 0.2rem solid black;
-            }
         }
 
         display: flex;
@@ -52,5 +34,9 @@
             border-radius: 0.5rem;
             border: 0.2rem solid black;
         }
+    }
+
+    button {
+        width: 100%;
     }
 }
