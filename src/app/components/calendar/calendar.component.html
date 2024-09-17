@@ -1,0 +1,22 @@
+<div class="calendar-controls">
+  <button (click)="prevMonth()">Previous</button>
+  <span>{{ formatDay(currentMonth) }}</span>
+  <button (click)="nextMonth()">Next</button>
+</div>
+<div class="calendar">
+  <div class="calendar-header">
+    <div *ngFor="let day of ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']">
+      {{ day }}
+    </div>
+  </div>
+  <div class="calendar-body">
+    <div *ngFor="let week of weeks" class="calendar-row">
+      <div
+        *ngFor="let day of week"
+        [ngClass]="{ 'calendar-day': true, today: isToday(day) }"
+      >
+        {{ day ? formatDay(day) : "" }}
+      </div>
+    </div>
+  </div>
+</div>

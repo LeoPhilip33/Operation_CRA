@@ -6,11 +6,12 @@ import { addForm } from '../../store/agent.actions';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule } from '@angular/forms';
 import { Agent } from '../../interfaces/agent';
+import { CalendarComponent } from '../../components/calendar/calendar.component';
 
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [ReactiveFormsModule, CommonModule],
+  imports: [ReactiveFormsModule, CommonModule, CalendarComponent],
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.scss'],
 })
