@@ -1,4 +1,18 @@
 <form [formGroup]="activityReport" (ngSubmit)="onSubmit()">
+  @if(storedAgents$ | async; as agents) { @if(agents.length > 0) {
+  <div>
+    <select name="agents">
+      <option value="">-- Sélectionner un agent --</option>
+      @for (agent of agents; track $index) {
+      <option [value]="agent.id">
+        {{ agent.lastName }} {{ agent.firstName }}
+      </option>
+      }
+    </select>
+  </div>
+  }@else {
+  <p>Créer d'abord les agents</p>
+  } }
   <div>
     <label for="project">Project</label>
     <input id="project" formControlName="project" />

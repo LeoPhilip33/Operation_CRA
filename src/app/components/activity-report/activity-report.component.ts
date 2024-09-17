@@ -10,6 +10,7 @@ import { Observable } from 'rxjs';
 import { ActivityReport } from '../../interfaces/activity-report';
 import { Store } from '@ngrx/store';
 import { addActivityReport } from '../../store/agent.actions';
+import { Agent } from '../../interfaces/agent';
 
 @Component({
   selector: 'app-activity-report',
@@ -21,11 +22,14 @@ import { addActivityReport } from '../../store/agent.actions';
 export class ActivityReportComponent {
   activityReport: FormGroup;
   storedActivityReport$: Observable<ActivityReport[]>;
+  storedAgents$: Observable<Agent[]>;
   errorMessage: string | null;
 
   constructor(
     private fb: FormBuilder,
-    private store: Store<{ app: { activityReports: ActivityReport[] } }>
+    private store: Store<{
+      app: { activityReports: ActivityReport[]; agents: Agent[] };
+    }>
   ) {
     this.errorMessage = null;
 
@@ -41,9 +45,7 @@ export class ActivityReportComponent {
       (state) => state.app.activityReports
     );
 
-    this.storedActivityReport$.subscribe((data) => {
-      console.log(data);
-    });
+    this.storedAgents$ = this.store.select((state) => state.app.agents);
   }
 
   isFieldInvalid(field: string): boolean {
