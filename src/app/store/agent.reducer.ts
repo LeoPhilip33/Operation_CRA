@@ -1,14 +1,30 @@
 import { createReducer, on, Action } from '@ngrx/store';
-import { addForm } from './agent.actions';
+import { addActivityReport, addForm } from './agent.actions';
 import { Agent } from '../interfaces/agent';
+import { ActivityReport } from '../interfaces/activity-report';
 
-export const initialState: Agent[] = [];
+export interface AppState {
+  agents: Agent[];
+  activityReports: ActivityReport[];
+}
+
+export const initialState: AppState = {
+  agents: [],
+  activityReports: [],
+};
 
 const _formReducer = createReducer(
   initialState,
-  on(addForm, (state, { formData }) => [...state, formData])
+  on(addForm, (state, { formData }) => ({
+    ...state,
+    agents: [...state.agents, formData],
+  })),
+  on(addActivityReport, (state, { report }) => ({
+    ...state,
+    activityReports: [...state.activityReports, report],
+  }))
 );
 
-export function formReducer(state: Agent[] | undefined, action: Action) {
+export function formReducer(state: AppState | undefined, action: Action) {
   return _formReducer(state, action);
 }

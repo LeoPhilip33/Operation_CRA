@@ -1,0 +1,19 @@
+<form [formGroup]="activityReport" (ngSubmit)="onSubmit()">
+  <div>
+    <label for="location">Lieu</label>
+    <input id="location" formControlName="location" />
+  </div>
+  <div>
+    <label for="startDate">Date de début</label>
+    <input id="startDate" formControlName="startDate" />
+  </div>
+  <div>
+    <label for="endDate">Date de fin</label>
+    <textarea id="endDate" formControlName="endDate"></textarea>
+  </div>
+  <div>
+    <label for="activity">Commentaire</label>
+    <textarea id="activity" formControlName="activity"></textarea>
+  </div>
+  <button type="submit">Envoyer</button>
+</form>
