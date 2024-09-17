@@ -1,6 +1,11 @@
 import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
-import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
+import {
+  FormBuilder,
+  FormGroup,
+  ReactiveFormsModule,
+  Validators,
+} from '@angular/forms';
 import { Observable } from 'rxjs';
 import { ActivityReport } from '../../interfaces/activity-report';
 import { Store } from '@ngrx/store';
@@ -20,22 +25,33 @@ export class ActivityReportComponent {
 
   constructor(
     private fb: FormBuilder,
-    private store: Store<{ forms: ActivityReport[] }>
+    private store: Store<{ app: { activityReports: ActivityReport[] } }>
   ) {
     this.errorMessage = null;
+
     this.activityReport = this.fb.group({
-      agentId: [1],
-      location: [''],
-      startDate: [new Date()],
-      endDate: [new Date()],
-      activity: [''],
+      agentId: [1, Validators.required],
+      project: ['', Validators.required],
+      startDate: [new Date(), Validators.required],
+      endDate: [new Date(), Validators.required],
+      activity: ['', Validators.required],
     });
 
-    this.storedActivityReport$ = this.store.select((state) => state.forms);
+    this.storedActivityReport$ = this.store.select(
+      (state) => state.app.activityReports
+    );
 
     this.storedActivityReport$.subscribe((data) => {
       console.log(data);
     });
+  }
+
+  isFieldInvalid(field: string): boolean {
+    return (
+      (this.activityReport.get(field)?.invalid &&
+        this.activityReport.get(field)?.touched) ??
+      false
+    );
   }
 
   onSubmit() {

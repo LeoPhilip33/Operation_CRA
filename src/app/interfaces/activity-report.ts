@@ -1,5 +1,5 @@
 export interface ActivityReport {
-  location: string;
+  project: string;
   startDate: Date;
   endDate: Date;
   activity: string;

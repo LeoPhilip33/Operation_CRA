@@ -16,7 +16,7 @@ export const addActivityReport = createAction(
   '[Form] Add Activity Report',
   props<{
     report: {
-      location: string;
+      project: string;
       startDate: Date;
       endDate: Date;
       activity: string;
