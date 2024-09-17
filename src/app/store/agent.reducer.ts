@@ -1,5 +1,5 @@
 import { createReducer, on, Action } from '@ngrx/store';
-import { addActivityReport, addForm } from './agent.actions';
+import { addActivityReport, addAgent } from './agent.actions';
 import { Agent } from '../interfaces/agent';
 import { ActivityReport } from '../interfaces/activity-report';
 
@@ -13,11 +13,11 @@ export const initialState: AppState = {
   activityReports: [],
 };
 
-const _formReducer = createReducer(
+const _appReducer = createReducer(
   initialState,
-  on(addForm, (state, { formData }) => ({
+  on(addAgent, (state, { agentData }) => ({
     ...state,
-    agents: [...state.agents, formData],
+    agents: [...state.agents, agentData],
   })),
   on(addActivityReport, (state, { report }) => ({
     ...state,
@@ -25,6 +25,6 @@ const _formReducer = createReducer(
   }))
 );
 
-export function formReducer(state: AppState | undefined, action: Action) {
-  return _formReducer(state, action);
+export function appReducer(state: AppState | undefined, action: Action) {
+  return _appReducer(state, action);
 }

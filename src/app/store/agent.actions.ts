@@ -1,8 +1,15 @@
 import { createAction, props } from '@ngrx/store';
 
-export const addForm = createAction(
-  '[Form] Add Form',
-  props<{ formData: { lastName: string; firstName: string; note: string } }>()
+export const addAgent = createAction(
+  '[Form] Add Agent',
+  props<{
+    agentData: {
+      id: number;
+      lastName: string;
+      firstName: string;
+      note: string;
+    };
+  }>()
 );
 
 export const addActivityReport = createAction(

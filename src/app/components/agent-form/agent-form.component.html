@@ -14,12 +14,15 @@
   <button type="submit">Envoyer</button>
 </form>
 
-@if(forms$ | async; as forms) { @if(forms.length > 0) {
+@if(agentsData$ | async; as agents) { @if(agents.length > 0) {
 
-<h3>Formulaires soumis :</h3>
+<h3>Agents:</h3>
 <ul>
-  @for (form of forms; track $index) {
-  <li>{{ form.lastName }} {{ form.firstName }} - {{ form.note }}</li>
+  @for (agent of agents; track $index) {
+  <li>
+    {{ agent.id }} -- {{ agent.lastName }} {{ agent.firstName }} -
+    {{ agent.note }}
+  </li>
   }
 </ul>
 

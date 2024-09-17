@@ -1,10 +1,11 @@
 import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { Observable } from 'rxjs/internal/Observable';
-import { Agent } from '../../interfaces/agent';
 import { Store } from '@ngrx/store';
-import { addForm } from '../../store/agent.actions';
+import { addAgent } from '../../store/agent.actions';
 import { CommonModule } from '@angular/common';
+import { take, tap } from 'rxjs';
+import { Agent } from '../../interfaces/agent';
 
 @Component({
   selector: 'app-agent-form',
@@ -15,30 +16,44 @@ import { CommonModule } from '@angular/common';
 })
 export class AgentFormComponent {
   agents: FormGroup;
-  forms$: Observable<Agent[]>;
+  agentsData$: Observable<Agent[]>;
   errorMessage: string | null;
 
   constructor(
     private fb: FormBuilder,
-    private store: Store<{ forms: Agent[] }>
+    private store: Store<{
+      app: { agents: Agent[] };
+    }>
   ) {
     this.errorMessage = null;
     this.agents = this.fb.group({
+      id: [0],
       lastName: [''],
       firstName: [''],
       note: [''],
     });
 
-    this.forms$ = this.store.select((state) => state.forms);
+    this.agentsData$ = this.store.select((state) => state.app.agents);
   }
 
   onSubmit() {
-    if (this.agents.valid) {
-      this.errorMessage = null;
-      this.store.dispatch(addForm({ formData: this.agents.value }));
-      this.agents.reset();
-    } else {
-      this.errorMessage = 'Form is invalid';
-    }
+    this.agentsData$
+      .pipe(
+        take(1),
+        tap((agents) => {
+          this.agents.patchValue({
+            id: agents ? agents.length : 0,
+          });
+
+          if (this.agents.valid) {
+            this.errorMessage = null;
+            this.store.dispatch(addAgent({ agentData: this.agents.value }));
+            this.agents.reset();
+          } else {
+            this.errorMessage = 'Form is invalid';
+          }
+        })
+      )
+      .subscribe();
   }
 }
