@@ -20,6 +20,7 @@ export const addActivityReport = createAction(
       startDate: Date;
       endDate: Date;
       activity: string;
+      agentId: number;
     };
   }>()
 );

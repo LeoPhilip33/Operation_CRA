@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import {
   startOfMonth,
   endOfMonth,
@@ -7,7 +7,12 @@ import {
   subMonths,
   addMonths,
   format,
+  parseISO,
+  isWithinInterval,
 } from 'date-fns';
+import { Legend } from '../../interfaces/legend';
+import { Agent } from '../../interfaces/agent';
+import { ActivityReport } from '../../interfaces/activity-report';
 
 @Component({
   selector: 'app-calendar',
@@ -16,31 +21,38 @@ import {
   templateUrl: './calendar.component.html',
   styleUrl: './calendar.component.scss',
 })
-export class CalendarComponent {
+export class CalendarComponent implements OnInit {
+  @Input() legends: Legend[] = [];
+  @Input() agents: Agent[] = [];
+  @Input() activityReports: ActivityReport[] = [];
+
   currentMonth: Date = new Date();
   days: Date[] = [];
   weeks: Date[][] = [];
 
   ngOnInit() {
     this.loadDays();
+    console.log('agents', this.agents);
+    console.log('activityReports', this.activityReports);
   }
 
   loadDays() {
     const start = startOfMonth(this.currentMonth);
     const end = endOfMonth(this.currentMonth);
-    const daysBefore = eachDayOfInterval({
-      start: start,
-      end: end,
-    });
+    const daysInMonth = eachDayOfInterval({ start, end });
 
     const startWeek = start.getDay();
     const daysBeforeMonth = Array(startWeek).fill(null);
-    const daysInMonth = [...daysBefore, ...daysBeforeMonth];
+    const allDays = [...daysBeforeMonth, ...daysInMonth];
 
     this.weeks = [];
-    for (let i = 0; i < daysInMonth.length; i += 7) {
-      this.weeks.push(daysInMonth.slice(i, i + 7));
+    for (let i = 0; i < allDays.length; i += 7) {
+      this.weeks.push(allDays.slice(i, i + 7));
     }
+  }
+
+  format(date: Date): string {
+    return format(date, 'MMMM yyyy');
   }
 
   prevMonth() {
@@ -60,5 +72,21 @@ export class CalendarComponent {
   isToday(date: Date): boolean {
     const today = new Date();
     return format(date, 'yyyy-MM-dd') === format(today, 'yyyy-MM-dd');
+  }
+
+  getAgentById(agentId: number): Agent | undefined {
+    return this.agents.find((agent) => Number(agent.id) === Number(agentId));
+  }
+
+  getActivityForDay(day: Date): ActivityReport[] {
+    if (!day) {
+      return [];
+    }
+
+    return this.activityReports.filter((report) => {
+      const startDate = parseISO(report.startDate.toString());
+      const endDate = parseISO(report.endDate.toString());
+      return isWithinInterval(day, { start: startDate, end: endDate });
+    });
   }
 }

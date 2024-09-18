@@ -35,7 +35,7 @@ export class ActivityReportFormComponent {
     this.errorMessage = null;
 
     this.activityReport = this.fb.group({
-      agentId: [1, Validators.required],
+      agentId: [null, Validators.required],
       project: ['', Validators.required],
       startDate: [new Date(), Validators.required],
       endDate: [new Date(), Validators.required],

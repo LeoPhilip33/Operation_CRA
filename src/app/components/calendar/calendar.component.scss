@@ -35,6 +35,21 @@
         flex-direction: column;
         flex: 1;
 
+        .calendar-day {
+            display: flex;
+            flex-direction: column;
+
+            .activity-item {
+                padding: 0.5rem;
+                border-left: 1px solid red;
+                background-color: #ffc6c6;
+            }
+
+            .agent {
+                font-weight: bold;
+            }
+        }
+
         .calendar-row {
             display: flex;
             flex: 1;
@@ -58,5 +73,20 @@
             }
         }
 
+    }
+}
+
+.legends-container {
+    margin-top: 2rem;
+
+    >div {
+
+        display: flex;
+        gap: 1rem;
+
+        .badge {
+            padding: 0.5rem;
+            border-radius: 0.5rem;
+        }
     }
 }

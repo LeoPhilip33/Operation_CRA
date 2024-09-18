@@ -3,4 +3,5 @@ export interface ActivityReport {
   startDate: Date;
   endDate: Date;
   activity: string;
+  agentId: number;
 }
