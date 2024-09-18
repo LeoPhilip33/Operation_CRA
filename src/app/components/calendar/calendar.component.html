@@ -23,7 +23,8 @@
           <div class="activity-item" (click)="viewCra(activity)">
             @if(getAgentById(activity.agentId); as agent) {
             <p class="agent">
-              {{ agent.firstName }} {{ agent.lastName }} {{ activity.project }}
+              {{ agent.firstName }} {{ agent.lastName }}
+              {{ activity.project }}
               {{ activity.activity }}
             </p>
             }

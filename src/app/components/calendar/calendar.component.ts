@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import {
   startOfMonth,
   endOfMonth,
@@ -27,10 +27,12 @@ export class CalendarComponent implements OnInit {
   @Input() agents: Agent[] = [];
   @Input() leaves: Leave[] = [];
   @Input() activityReports: ActivityReport[] = [];
+  @Output() viewActivity = new EventEmitter<ActivityReport>();
 
   currentMonth: Date = new Date();
   days: Date[] = [];
   weeks: Date[][] = [];
+  selectedCra: ActivityReport | null = null;
 
   ngOnInit() {
     this.loadDays();
@@ -79,7 +81,7 @@ export class CalendarComponent implements OnInit {
   }
 
   viewCra(activity: ActivityReport) {
-    console.log('View CRA', activity);
+    this.viewActivity.emit(activity);
   }
 
   getLeaveForDay(day: Date): Leave[] {

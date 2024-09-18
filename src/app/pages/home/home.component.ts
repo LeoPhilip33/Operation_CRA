@@ -7,11 +7,18 @@ import { Agent } from '../../interfaces/agent';
 import { ActivityReport } from '../../interfaces/activity-report';
 import { Store } from '@ngrx/store';
 import { Leave } from '../../interfaces/leave';
+import { DialogComponent } from '../../components/dialog/dialog.component';
+import { ActivityReportFormComponent } from '../../components/activity-report-form/activity-report-form.component';
 
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [CalendarComponent, HeaderComponent],
+  imports: [
+    CalendarComponent,
+    HeaderComponent,
+    DialogComponent,
+    ActivityReportFormComponent,
+  ],
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.scss'],
 })
@@ -22,6 +29,7 @@ export class HomeComponent implements OnInit {
   agents: Agent[] = [];
   leaves: Leave[] = [];
   activityReports: ActivityReport[] = [];
+  viewActivity: ActivityReport | null = null;
 
   constructor(
     private store: Store<{
@@ -51,6 +59,10 @@ export class HomeComponent implements OnInit {
       label: 'Agent présent',
     },
   ];
+
+  computeViewActivity(activityReport: ActivityReport) {
+    this.viewActivity = activityReport;
+  }
 
   ngOnInit(): void {
     this.storedActivityReport$

@@ -62,7 +62,7 @@
       [disabled]="activityReport.invalid"
       type="submit"
     >
-      Envoyer
+      @if(selectedActivityReport) { Modifier } @else { Ajouter }
     </button>
   </form>
   } @else {

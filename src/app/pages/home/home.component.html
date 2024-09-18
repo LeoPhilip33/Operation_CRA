@@ -1,9 +1,33 @@
-<app-header></app-header>
-<div class="container-page">
-  <app-calendar
-    [agents]="agents"
-    [activityReports]="activityReports"
-    [legends]="legends"
-    [leaves]="leaves"
-  ></app-calendar>
+<div class="container-component">
+  <app-header></app-header>
+  <div class="container-page">
+    <app-calendar
+      [agents]="agents"
+      [activityReports]="activityReports"
+      [legends]="legends"
+      [leaves]="leaves"
+      (viewActivity)="computeViewActivity($event)"
+    ></app-calendar>
+  </div>
+
+  @if(viewActivity) {
+  <div class="overlay">
+    <div class="container-cra">
+      <app-dialog>
+        <div>
+          <img
+            (click)="viewActivity = null"
+            src="assets/cross.svg"
+            alt="Fermer la popup"
+          />
+        </div>
+        <app-activity-report-form
+          (isActivityReportUpdated)="viewActivity = null"
+          [selectedActivityReport]="viewActivity"
+        ></app-activity-report-form
+      ></app-dialog>
+    </div>
+  </div>
+
+  }
 </div>

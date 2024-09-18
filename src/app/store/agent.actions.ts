@@ -23,3 +23,11 @@ export const addLeave = createAction(
     leaveData: Leave;
   }>()
 );
+
+export const updateActivityReport = createAction(
+  '[Form] Update Activity Report',
+  props<{
+    id: number;
+    report: Partial<ActivityReport>;
+  }>()
+);

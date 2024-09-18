@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import {
   AbstractControlOptions,
   FormBuilder,
@@ -7,10 +7,13 @@ import {
   ReactiveFormsModule,
   Validators,
 } from '@angular/forms';
-import { Observable } from 'rxjs';
+import { Observable, take, tap } from 'rxjs';
 import { ActivityReport } from '../../interfaces/activity-report';
 import { Store } from '@ngrx/store';
-import { addActivityReport } from '../../store/agent.actions';
+import {
+  addActivityReport,
+  updateActivityReport,
+} from '../../store/agent.actions';
 import { Agent } from '../../interfaces/agent';
 import { RouterModule } from '@angular/router';
 
@@ -21,10 +24,14 @@ import { RouterModule } from '@angular/router';
   templateUrl: './activity-report-form.component.html',
   styleUrl: './activity-report-form.component.scss',
 })
-export class ActivityReportFormComponent {
+export class ActivityReportFormComponent implements OnInit {
+  @Input() selectedActivityReport: ActivityReport | null = null;
+  @Output() isActivityReportUpdated = new EventEmitter<boolean>(false);
+
   activityReport: FormGroup;
   storedAgents$: Observable<Agent[]>;
   errorMessage: string | null;
+  storedActivityReport$: Observable<ActivityReport[]>;
 
   constructor(
     private fb: FormBuilder,
@@ -36,6 +43,7 @@ export class ActivityReportFormComponent {
 
     this.activityReport = this.fb.group(
       {
+        id: [0],
         agentId: [null, Validators.required],
         project: ['', [Validators.required, Validators.minLength(3)]],
         startDate: [null, Validators.required],
@@ -49,6 +57,15 @@ export class ActivityReportFormComponent {
     );
 
     this.storedAgents$ = this.store.select((state) => state.app.agents);
+    this.storedActivityReport$ = this.store.select(
+      (state) => state.app.activityReports
+    );
+  }
+
+  ngOnInit(): void {
+    if (this.selectedActivityReport) {
+      this.activityReport.patchValue(this.selectedActivityReport);
+    }
   }
 
   get project() {
@@ -85,10 +102,32 @@ export class ActivityReportFormComponent {
   onSubmit() {
     if (this.activityReport.valid) {
       this.errorMessage = null;
-      this.store.dispatch(
-        addActivityReport({ report: this.activityReport.value })
-      );
-      this.activityReport.reset();
+      if (this.selectedActivityReport) {
+        this.store.dispatch(
+          updateActivityReport({
+            id: this.selectedActivityReport.id,
+            report: this.activityReport.value,
+          })
+        );
+
+        this.isActivityReportUpdated.emit(true);
+      } else {
+        this.storedActivityReport$
+          .pipe(
+            take(1),
+            tap((activityReport) => {
+              this.activityReport.patchValue({
+                id: activityReport ? activityReport.length : 0,
+              });
+            })
+          )
+          .subscribe();
+
+        this.store.dispatch(
+          addActivityReport({ report: this.activityReport.value })
+        );
+        this.activityReport.reset();
+      }
     } else {
       this.errorMessage = 'Form is invalid';
     }
