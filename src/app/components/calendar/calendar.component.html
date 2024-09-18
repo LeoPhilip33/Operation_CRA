@@ -32,26 +32,29 @@
       @for (day of week; track $index) {
       <div class="calendar-day" [ngClass]="{ today: isToday(day) }">
         <div>{{ day ? formatDay(day) : "" }}</div>
-        @for (activity of getActivityForDay(day); track $index) {
-        <div class="activity-item">
-          @if(getAgentById(activity.agentId); as agent) {
-          <p class="agent">{{ agent.firstName }} {{ agent.lastName }}</p>
-          }
-          <div>
-            Projet: {{ activity.project }} <br />
-            Activitée: {{ activity.activity }}
+        <div class="container-items">
+          @for (activity of getActivityForDay(day); track $index) {
+          <div class="activity-item">
+            @if(getAgentById(activity.agentId); as agent) {
+            <p class="agent">{{ agent.firstName }} {{ agent.lastName }}</p>
+            }
+            <div>
+              Projet: {{ activity.project }} <br />
+              Activitée: {{ activity.activity }}
+            </div>
           </div>
-        </div>
-        } @for (leave of getLeaveForDay(day); track $index) {
-        <div class="leave-item">
-          @if(getAgentById(leave.agentId); as agent) {
-          <p class="agent">
-            {{ agent.firstName }} {{ agent.lastName }} (En congé)
-          </p>
-          <div>Raison: {{ leave.reason }}</div>
+          } @for (leave of getLeaveForDay(day); track $index) {
+          <div class="leave-item">
+            @if(getAgentById(leave.agentId); as agent) {
+            <p class="agent">
+              {{ agent.firstName }} {{ agent.lastName }} (En congé)
+            </p>
+            <div>Raison: {{ leave.reason }}</div>
+            }
+          </div>
+
           }
         </div>
-        }
       </div>
       }
     </div>

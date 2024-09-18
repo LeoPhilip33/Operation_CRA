@@ -39,11 +39,18 @@
             display: flex;
             flex-direction: column;
 
-            .activity-item {
-                padding: 0.5rem;
-                border-left: 1px solid red;
-                background-color: #ffc6c6;
+            .container-items {
+                display: flex;
+                flex-direction: column;
+                gap: 1rem;
+
+                .activity-item {
+                    padding: 0.5rem;
+                    border-left: 1px solid red;
+                    background-color: #ffc6c6;
+                }
             }
+
 
             .agent {
                 font-weight: bold;
