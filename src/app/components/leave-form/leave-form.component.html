@@ -1,22 +1,45 @@
 <div class="form-container">
   <h1>Poser une absence</h1>
-  <form>
-    <select id="leave-type" name="leave-type">
-      <option value="">-- Séléctionner un motif --</option>
+  @if(storedAgents$ | async; as agents) { @if(agents.length > 0) {
+  <form [formGroup]="leave" (ngSubmit)="onSubmit()">
+    <select name="agents" formControlName="agentId">
+      <option [value]="null">-- Sélectionner un agent --</option>
+      @for (agent of agents; track $index) {
+      <option [value]="agent.id">
+        {{ agent.lastName }} {{ agent.firstName }}
+      </option>
+      }
+    </select>
+    <select formControlName="reason" id="leave-type" name="leave-type">
+      <option [value]="null">-- Type de congés --</option>
       <option value="sick">Conges Payés</option>
       <option value="vacation">Maladie</option>
     </select>
     <div>
       <div>
         <label>Date de début:</label>
-        <input type="date" id="start-date" name="start-date" />
+        <input
+          formControlName="startDate"
+          type="date"
+          id="start-date"
+          name="start-date"
+        />
       </div>
 
       <div>
         <label>Date de fin:</label>
-        <input type="date" id="end-date" name="end-date" />
+        <input
+          formControlName="endDate"
+          type="date"
+          id="end-date"
+          name="end-date"
+        />
       </div>
     </div>
     <button type="submit">Envoyer</button>
   </form>
+  }@else {
+  <p>Vous avez aucun agent, commencez par en créer un.</p>
+  <button routerLink="/agents">Créer mon agent</button>
+  }}
 </div>

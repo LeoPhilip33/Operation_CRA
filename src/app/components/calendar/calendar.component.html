@@ -5,44 +5,56 @@
 </div>
 
 <div class="calendar">
-  <div *ngIf="legends.length > 0" class="legends-container">
+  @if(legends.length > 0) {
+  <div class="legends-container">
+    @for (legend of legends; track $index) {
     <div
-      *ngFor="let legend of legends"
       class="badge"
       [style.background-color]="legend.backgroundColor"
       [style.color]="legend.color"
     >
       {{ legend.label }}
     </div>
+    }
   </div>
+  }
 
   <div class="calendar-header">
-    <div *ngFor="let day of ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']">
-      {{ day }}
-    </div>
+    @for (day of ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']; track
+    $index) {
+    {{ day }}
+    }
   </div>
 
   <div class="calendar-body">
-    <div *ngFor="let week of weeks" class="calendar-row">
-      <div
-        *ngFor="let day of week"
-        class="calendar-day"
-        [ngClass]="{ today: isToday(day) }"
-      >
+    @for (week of weeks; track $index) {
+    <div class="calendar-row">
+      @for (day of week; track $index) {
+      <div class="calendar-day" [ngClass]="{ today: isToday(day) }">
         <div>{{ day ? formatDay(day) : "" }}</div>
-
-        <div *ngFor="let activity of getActivityForDay(day)">
-          <div class="activity-item">
-            <p class="agent" *ngIf="getAgentById(activity.agentId) as agent">
-              {{ agent.firstName }} {{ agent.lastName }}
-            </p>
-            <div>
-              Projet: {{ activity.project }} <br />
-              Activitée: {{ activity.activity }}
-            </div>
+        @for (activity of getActivityForDay(day); track $index) {
+        <div class="activity-item">
+          @if(getAgentById(activity.agentId); as agent) {
+          <p class="agent">{{ agent.firstName }} {{ agent.lastName }}</p>
+          }
+          <div>
+            Projet: {{ activity.project }} <br />
+            Activitée: {{ activity.activity }}
           </div>
         </div>
+        } @for (leave of getLeaveForDay(day); track $index) {
+        <div class="leave-item">
+          @if(getAgentById(leave.agentId); as agent) {
+          <p class="agent">
+            {{ agent.firstName }} {{ agent.lastName }} (En congé)
+          </p>
+          <div>Raison: {{ leave.reason }}</div>
+          }
+        </div>
+        }
       </div>
+      }
     </div>
+    }
   </div>
 </div>

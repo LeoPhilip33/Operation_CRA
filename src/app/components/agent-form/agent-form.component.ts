@@ -28,9 +28,9 @@ export class AgentFormComponent {
     this.errorMessage = null;
     this.agents = this.fb.group({
       id: [0],
-      lastName: ['aaaaa'], // A supprimer
-      firstName: ['aaaaaaaaaaaaaaaaaaaaaaaaaaaaa'], // A supprimer
-      note: ['aaaaaaaaaa'], // A supprimer
+      lastName: [null],
+      firstName: [null],
+      note: [null],
     });
 
     this.agentsData$ = this.store.select((state) => state.app.agents);

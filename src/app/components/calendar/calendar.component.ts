@@ -13,6 +13,7 @@ import {
 import { Legend } from '../../interfaces/legend';
 import { Agent } from '../../interfaces/agent';
 import { ActivityReport } from '../../interfaces/activity-report';
+import { Leave } from '../../interfaces/leave';
 
 @Component({
   selector: 'app-calendar',
@@ -24,6 +25,7 @@ import { ActivityReport } from '../../interfaces/activity-report';
 export class CalendarComponent implements OnInit {
   @Input() legends: Legend[] = [];
   @Input() agents: Agent[] = [];
+  @Input() leaves: Leave[] = [];
   @Input() activityReports: ActivityReport[] = [];
 
   currentMonth: Date = new Date();
@@ -32,8 +34,6 @@ export class CalendarComponent implements OnInit {
 
   ngOnInit() {
     this.loadDays();
-    console.log('agents', this.agents);
-    console.log('activityReports', this.activityReports);
   }
 
   loadDays() {
@@ -76,6 +76,18 @@ export class CalendarComponent implements OnInit {
 
   getAgentById(agentId: number): Agent | undefined {
     return this.agents.find((agent) => Number(agent.id) === Number(agentId));
+  }
+
+  getLeaveForDay(day: Date): Leave[] {
+    if (!day) {
+      return [];
+    }
+
+    return this.leaves.filter((leave) => {
+      const startDate = parseISO(leave.startDate.toString());
+      const endDate = parseISO(leave.endDate.toString());
+      return isWithinInterval(day, { start: startDate, end: endDate });
+    });
   }
 
   getActivityForDay(day: Date): ActivityReport[] {

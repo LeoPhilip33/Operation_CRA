@@ -36,10 +36,10 @@ export class ActivityReportFormComponent {
 
     this.activityReport = this.fb.group({
       agentId: [null, Validators.required],
-      project: ['', Validators.required],
-      startDate: [new Date(), Validators.required],
-      endDate: [new Date(), Validators.required],
-      activity: ['', Validators.required],
+      project: [null, Validators.required],
+      startDate: [null, Validators.required],
+      endDate: [null, Validators.required],
+      activity: [null, Validators.required],
     });
 
     this.storedActivityReport$ = this.store.select(

@@ -1,16 +1,19 @@
 import { createReducer, on, Action } from '@ngrx/store';
-import { addActivityReport, addAgent } from './agent.actions';
+import { addActivityReport, addAgent, addLeave } from './agent.actions';
 import { Agent } from '../interfaces/agent';
 import { ActivityReport } from '../interfaces/activity-report';
+import { Leave } from '../interfaces/leave';
 
 export interface AppState {
   agents: Agent[];
   activityReports: ActivityReport[];
+  leaves: Leave[];
 }
 
 export const initialState: AppState = {
   agents: [],
   activityReports: [],
+  leaves: [],
 };
 
 const _appReducer = createReducer(
@@ -22,6 +25,10 @@ const _appReducer = createReducer(
   on(addActivityReport, (state, { report }) => ({
     ...state,
     activityReports: [...state.activityReports, report],
+  })),
+  on(addLeave, (state, { leaveData }) => ({
+    ...state,
+    leaves: [...state.leaves, leaveData],
   }))
 );
 

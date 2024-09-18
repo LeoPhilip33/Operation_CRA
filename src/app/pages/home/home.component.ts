@@ -6,6 +6,7 @@ import { Observable, tap } from 'rxjs';
 import { Agent } from '../../interfaces/agent';
 import { ActivityReport } from '../../interfaces/activity-report';
 import { Store } from '@ngrx/store';
+import { Leave } from '../../interfaces/leave';
 
 @Component({
   selector: 'app-home',
@@ -17,18 +18,25 @@ import { Store } from '@ngrx/store';
 export class HomeComponent implements OnInit {
   storedAgents$: Observable<Agent[]>;
   storedActivityReport$: Observable<ActivityReport[]>;
+  storedLeaves$: Observable<Leave[]>;
   agents: Agent[] = [];
+  leaves: Leave[] = [];
   activityReports: ActivityReport[] = [];
 
   constructor(
     private store: Store<{
-      app: { activityReports: ActivityReport[]; agents: Agent[] };
+      app: {
+        activityReports: ActivityReport[];
+        agents: Agent[];
+        leaves: Leave[];
+      };
     }>
   ) {
     this.storedAgents$ = this.store.select((state) => state.app.agents);
     this.storedActivityReport$ = this.store.select(
       (state) => state.app.activityReports
     );
+    this.storedLeaves$ = this.store.select((state) => state.app.leaves);
   }
 
   legends: Legend[] = [
@@ -51,6 +59,10 @@ export class HomeComponent implements OnInit {
 
     this.storedAgents$
       .pipe(tap((agents) => (this.agents = agents)))
+      .subscribe();
+
+    this.storedLeaves$
+      .pipe(tap((leaves) => (this.leaves = leaves)))
       .subscribe();
   }
 }

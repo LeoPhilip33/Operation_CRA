@@ -1,26 +1,25 @@
 import { createAction, props } from '@ngrx/store';
+import { Leave } from '../interfaces/leave';
+import { ActivityReport } from '../interfaces/activity-report';
+import { Agent } from '../interfaces/agent';
 
 export const addAgent = createAction(
   '[Form] Add Agent',
   props<{
-    agentData: {
-      id: number;
-      lastName: string;
-      firstName: string;
-      note: string;
-    };
+    agentData: Agent;
   }>()
 );
 
 export const addActivityReport = createAction(
   '[Form] Add Activity Report',
   props<{
-    report: {
-      project: string;
-      startDate: Date;
-      endDate: Date;
-      activity: string;
-      agentId: number;
-    };
+    report: ActivityReport;
+  }>()
+);
+
+export const addLeave = createAction(
+  '[Form] Add Leave',
+  props<{
+    leaveData: Leave;
   }>()
 );
