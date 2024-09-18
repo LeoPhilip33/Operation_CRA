@@ -1,20 +1,27 @@
 .form-container {
     padding: 2rem;
-    max-width: 50rem;
 
     form {
         display: flex;
         flex-direction: column;
         gap: 1rem;
-        width: 100%;
+        width: clamp(30rem, 50vw, 50rem);
 
         >div {
             display: flex;
             gap: 1rem;
 
-            input {
-                width: -webkit-fill-available;
+            >div {
+                display: flex;
+                flex-direction: column;
+                width: 50%;
+
+                input {
+                    width: 100%;
+                }
             }
+
+
         }
     }
 

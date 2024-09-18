@@ -1,12 +1,11 @@
 .form-container {
     padding: 2rem;
-    max-width: 50rem;
 
     form {
         display: flex;
         flex-direction: column;
         gap: 1rem;
-        width: 100%;
+        width: clamp(30rem, 50vw, 50rem);
 
         select {
             width: 100%;
