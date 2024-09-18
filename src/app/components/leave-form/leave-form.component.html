@@ -10,11 +10,17 @@
       </option>
       }
     </select>
+    @if (isFieldInvalid('agentId')) {
+    <p class="error">Un agent est requis.</p>
+    }
     <select formControlName="reason" id="leave-type" name="leave-type">
       <option [value]="null">-- Type de congés --</option>
       <option value="sick">Conges Payés</option>
       <option value="vacation">Maladie</option>
     </select>
+    @if (isFieldInvalid('reason')) {
+    <p class="error">La raison est requise.</p>
+    }
     <div>
       <div>
         <label>Date de début:</label>
@@ -24,6 +30,9 @@
           id="start-date"
           name="start-date"
         />
+        @if (isFieldInvalid('startDate')) {
+        <div class="error">La date de début est requise.</div>
+        }
       </div>
 
       <div>
@@ -34,9 +43,22 @@
           id="end-date"
           name="end-date"
         />
+        @if (isFieldInvalid('endDate')) {
+        <div class="error">La date de fin est requise.</div>
+        } @if (leave.errors?.['dateRange']) {
+        <div class="error">
+          La date de fin doit être postérieure à la date de début.
+        </div>
+        }
       </div>
     </div>
-    <button type="submit">Envoyer</button>
+    <button
+      [ngClass]="{ disabled: leave.invalid }"
+      [disabled]="leave.invalid"
+      type="submit"
+    >
+      Envoyer
+    </button>
   </form>
   }@else {
   <p>Vous avez aucun agent, commencez par en créer un.</p>

@@ -1,6 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
 import {
+  AbstractControlOptions,
   FormBuilder,
   FormGroup,
   ReactiveFormsModule,
@@ -42,8 +43,9 @@ export class ActivityReportFormComponent {
         activity: ['', [Validators.required, Validators.minLength(10)]],
       },
       {
-        validators: this.dateRangeValidator,
-      }
+        validators: this
+          .dateRangeValidator as AbstractControlOptions['validators'],
+      } as AbstractControlOptions
     );
 
     this.storedAgents$ = this.store.select((state) => state.app.agents);
