@@ -31,7 +31,10 @@
 
         &.active {
             font-weight: bold;
-            border-bottom: 2px solid white;
+
+            &::after {
+                width: 100%;
+            }
         }
 
         &:hover::after {
