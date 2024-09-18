@@ -13,48 +13,46 @@
   </div>
 
   <div class="calendar-body">
-    @for (week of weeks; track $index) {
-    <div class="calendar-row">
-      @for (day of week; track $index) {
-      <div class="calendar-day" [ngClass]="{ today: isToday(day) }">
-        <div>{{ day ? formatDay(day) : "" }}</div>
-        <div class="container-items">
-          @for (activity of getActivityForDay(day); track $index) {
-          <div class="activity-item" (click)="viewCra(activity)">
-            @if(getAgentById(activity.agentId); as agent) {
-            <p class="agent">
-              {{ agent.firstName }} {{ agent.lastName }}
-              {{ activity.project }}
-              {{ activity.activity }}
-            </p>
-            }
-          </div>
-          } @for (leave of getLeaveForDay(day); track $index) {
-          <div class="leave-item">
-            @if(getAgentById(leave.agentId); as agent) {
-            <p class="item">
-              {{ agent.firstName }} {{ agent.lastName }} (En congé)
-            </p>
-            <div>Raison: {{ leave.reason }}</div>
-            }
-          </div>
-
+    @for (week of weeks; track $index) { @for (day of week; track $index) {
+    <div class="calendar-day" [ngClass]="{ today: isToday(day) }">
+      <div>{{ day ? formatDay(day) : "" }}</div>
+      <div class="container-items">
+        @for (activity of getActivityForDay(day); track $index) {
+        <div class="activity-item" (click)="viewCra(activity)">
+          @if(getAgentById(activity.agentId); as agent) {
+          <p class="agent">
+            {{ agent.firstName }} {{ agent.lastName }}
+            {{ activity.project }}
+            {{ activity.activity }}
+          </p>
           }
         </div>
+        } @for (leave of getLeaveForDay(day); track $index) {
+        <div class="leave-item">
+          @if(getAgentById(leave.agentId); as agent) {
+          <p class="item">
+            {{ agent.firstName }} {{ agent.lastName }} (En congé)
+          </p>
+          <div>Raison: {{ leave.reason }}</div>
+          }
+        </div>
+
+        }
       </div>
-      }
     </div>
-    } @if(legends.length > 0) {
-    <div class="legends-container">
-      @for (legend of legends; track $index) {
-      <div
-        [style.background-color]="legend.backgroundColor"
-        [style.color]="legend.color"
-      >
-        {{ legend.label }}
-      </div>
-      }
-    </div>
-    }
+    } }
   </div>
 </div>
+
+@if(legends.length > 0) {
+<div class="legends-container">
+  @for (legend of legends; track $index) {
+  <div
+    [style.background-color]="legend.backgroundColor"
+    [style.color]="legend.color"
+  >
+    {{ legend.label }}
+  </div>
+  }
+</div>
+}
