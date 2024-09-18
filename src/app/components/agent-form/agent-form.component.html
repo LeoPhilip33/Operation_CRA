@@ -2,15 +2,33 @@
   <h1>Ajouter des agents</h1>
   <form [formGroup]="agents" (ngSubmit)="onSubmit()">
     <div>
-      <input id="lastName" formControlName="lastName" placeholder="Nom" />
-      <input id="firstName" formControlName="firstName" placeholder="Prénom" />
+      <div>
+        <input id="lastName" formControlName="lastName" placeholder="Nom" />
+        @if (isFieldInvalid('lastName')) {
+        <div class="error">Le nom est requis.</div>
+        }
+      </div>
+      <div>
+        <input
+          id="firstName"
+          formControlName="firstName"
+          placeholder="Prénom"
+        />
+        @if (isFieldInvalid('firstName')) {
+        <div class="error">Le prénom est requis.</div>
+        }
+      </div>
     </div>
-    <textarea
-      id="note"
-      formControlName="note"
-      placeholder="Commentaires.."
-    ></textarea>
-    <button type="submit">Envoyer</button>
+    @if (errorMessage) {
+    <p class="error">{{ errorMessage }}</p>
+    }
+    <button
+      [ngClass]="{ disabled: agents.invalid }"
+      [disabled]="agents.invalid"
+      type="submit"
+    >
+      Envoyer
+    </button>
   </form>
 
   @if(agentsData$ | async; as agents) { @if(agents.length > 0) {
@@ -23,7 +41,5 @@
     </div>
     }
   </div>
-  @if (errorMessage) {
-  <p>{{ errorMessage }}</p>
-  } }}
+  }}
 </div>

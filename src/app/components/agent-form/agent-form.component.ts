@@ -1,5 +1,10 @@
 import { Component } from '@angular/core';
-import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
+import {
+  FormBuilder,
+  FormGroup,
+  ReactiveFormsModule,
+  Validators,
+} from '@angular/forms';
 import { Observable } from 'rxjs/internal/Observable';
 import { Store } from '@ngrx/store';
 import { addAgent } from '../../store/agent.actions';
@@ -28,12 +33,24 @@ export class AgentFormComponent {
     this.errorMessage = null;
     this.agents = this.fb.group({
       id: [0],
-      lastName: [null],
-      firstName: [null],
-      note: [null],
+      lastName: ['', [Validators.required, Validators.minLength(3)]],
+      firstName: ['', [Validators.required, Validators.minLength(3)]],
     });
 
     this.agentsData$ = this.store.select((state) => state.app.agents);
+  }
+
+  get lastName() {
+    return this.agents.get('lastName');
+  }
+
+  get firstName() {
+    return this.agents.get('firstName');
+  }
+
+  isFieldInvalid(field: string): boolean {
+    const control = this.agents.get(field);
+    return (control?.invalid && (control?.touched || control?.dirty)) ?? false;
   }
 
   onSubmit() {

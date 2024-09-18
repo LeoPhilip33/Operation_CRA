@@ -8,10 +8,6 @@
         gap: 1rem;
         width: 100%;
 
-        .error {
-            color: red;
-        }
-
         select {
             width: 100%;
         }
@@ -19,9 +15,16 @@
         >div {
             display: flex;
             gap: 1rem;
+            width: -webkit-fill-available;
+
+            >div {
+                display: flex;
+                flex-direction: column;
+                width: inherit;
+            }
 
             input {
-                width: -webkit-fill-available;
+                width: inherit;
             }
         }
     }

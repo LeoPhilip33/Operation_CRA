@@ -1,5 +1,6 @@
 <div class="form-container">
   <h1>Reporter une activité</h1>
+  @if(storedAgents$ | async; as agents;) { @if(agents.length > 0) {
   <form [formGroup]="activityReport" (ngSubmit)="onSubmit()">
     <select name="agents" formControlName="agentId">
       <option [value]="null">-- Sélectionner un agent --</option>
@@ -10,19 +11,19 @@
       }
     </select>
     @if (isFieldInvalid('agentId')) {
-    <div class="error">Agent is required.</div>
+    <p class="error">Agent est requis.</p>
     }
 
     <input id="project" formControlName="project" placeholder="Projet" />
     @if (isFieldInvalid('project')) {
-    <div class="error">
-      Project is required and must be at least 3 characters long.
-    </div>
+    <p class="error">
+      Projet est requis et doit comporter au moins 3 caractères.
+    </p>
     }
 
     <div>
       <div>
-        <label>Date de début:</label> <br />
+        <label>Date de début:</label>
         <input type="date" id="startDate" formControlName="startDate" />
         @if (isFieldInvalid('startDate')) {
         <div class="error">La date de début est requise.</div>
@@ -47,13 +48,13 @@
       placeholder="Elements réalisées"
     ></textarea>
     @if (isFieldInvalid('activity')) {
-    <div class="error">
-      Activity is required and must be at least 10 characters long.
-    </div>
+    <p class="error">
+      Acitivity est requis et doit comporter au moins 10 caractères.
+    </p>
     } @if (errorMessage) {
-    <div class="error">
+    <p class="error">
       {{ errorMessage }}
-    </div>
+    </p>
     }
 
     <button
@@ -64,4 +65,7 @@
       Envoyer
     </button>
   </form>
+  } @else {
+  <p>Vous avez aucun agent, commencez par en créer un.</p>
+  <button routerLink="/agents">Ajouter un agent</button>} }
 </div>
