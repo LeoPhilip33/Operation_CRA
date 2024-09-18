@@ -78,6 +78,10 @@ export class CalendarComponent implements OnInit {
     return this.agents.find((agent) => Number(agent.id) === Number(agentId));
   }
 
+  viewCra(activity: ActivityReport) {
+    console.log('View CRA', activity);
+  }
+
   getLeaveForDay(day: Date): Leave[] {
     if (!day) {
       return [];

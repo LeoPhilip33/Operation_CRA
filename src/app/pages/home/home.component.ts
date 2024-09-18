@@ -41,14 +41,14 @@ export class HomeComponent implements OnInit {
 
   legends: Legend[] = [
     {
-      backgroundColor: '#f00',
+      backgroundColor: '#CC010F',
       color: '#fff',
       label: 'Agent absent',
     },
     {
-      backgroundColor: '#00f',
+      backgroundColor: '#0d0dba',
       color: '#fff',
-      label: 'Activité réalisée',
+      label: 'Agent présent',
     },
   ];
 

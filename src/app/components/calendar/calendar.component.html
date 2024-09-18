@@ -5,24 +5,10 @@
 </div>
 
 <div class="calendar">
-  @if(legends.length > 0) {
-  <div class="legends-container">
-    @for (legend of legends; track $index) {
-    <div
-      class="badge"
-      [style.background-color]="legend.backgroundColor"
-      [style.color]="legend.color"
-    >
-      {{ legend.label }}
-    </div>
-    }
-  </div>
-  }
-
   <div class="calendar-header">
     @for (day of ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']; track
     $index) {
-    {{ day }}
+    <p>{{ day }}</p>
     }
   </div>
 
@@ -34,19 +20,18 @@
         <div>{{ day ? formatDay(day) : "" }}</div>
         <div class="container-items">
           @for (activity of getActivityForDay(day); track $index) {
-          <div class="activity-item">
+          <div class="activity-item" (click)="viewCra(activity)">
             @if(getAgentById(activity.agentId); as agent) {
-            <p class="agent">{{ agent.firstName }} {{ agent.lastName }}</p>
+            <p class="agent">
+              {{ agent.firstName }} {{ agent.lastName }} {{ activity.project }}
+              {{ activity.activity }}
+            </p>
             }
-            <div>
-              Projet: {{ activity.project }} <br />
-              Activitée: {{ activity.activity }}
-            </div>
           </div>
           } @for (leave of getLeaveForDay(day); track $index) {
           <div class="leave-item">
             @if(getAgentById(leave.agentId); as agent) {
-            <p class="agent">
+            <p class="item">
               {{ agent.firstName }} {{ agent.lastName }} (En congé)
             </p>
             <div>Raison: {{ leave.reason }}</div>
@@ -55,6 +40,17 @@
 
           }
         </div>
+      </div>
+      }
+    </div>
+    } @if(legends.length > 0) {
+    <div class="legends-container">
+      @for (legend of legends; track $index) {
+      <div
+        [style.background-color]="legend.backgroundColor"
+        [style.color]="legend.color"
+      >
+        {{ legend.label }}
       </div>
       }
     </div>
