@@ -14,8 +14,16 @@
     </div>
 
     <input id="project" formControlName="project" placeholder="Projet" />
-    <input type="date" id="startDate" formControlName="startDate" />
-    <input type="date" id="endDate" formControlName="endDate" />
+    <div>
+      <div>
+        <label>Date de début:</label>
+        <input type="date" id="startDate" formControlName="startDate" />
+      </div>
+      <div>
+        <label>Date de fin:</label>
+        <input type="date" id="endDate" formControlName="endDate" />
+      </div>
+    </div>
     <textarea
       id="activity"
       formControlName="activity"
