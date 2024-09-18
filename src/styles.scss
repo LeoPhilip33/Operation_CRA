@@ -23,6 +23,12 @@ button {
         transition: 0.3s;
         border: 0.2rem solid black;
     }
+
+    &.disabled {
+        background-color: grey;
+        cursor: not-allowed;
+        border: 0.2rem solid grey;
+    }
 }
 
 input {

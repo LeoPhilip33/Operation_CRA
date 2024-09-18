@@ -22,7 +22,6 @@ import { RouterModule } from '@angular/router';
 })
 export class ActivityReportFormComponent {
   activityReport: FormGroup;
-  storedActivityReport$: Observable<ActivityReport[]>;
   storedAgents$: Observable<Agent[]>;
   errorMessage: string | null;
 
@@ -34,27 +33,51 @@ export class ActivityReportFormComponent {
   ) {
     this.errorMessage = null;
 
-    this.activityReport = this.fb.group({
-      agentId: [null, Validators.required],
-      project: [null, Validators.required],
-      startDate: [null, Validators.required],
-      endDate: [null, Validators.required],
-      activity: [null, Validators.required],
-    });
-
-    this.storedActivityReport$ = this.store.select(
-      (state) => state.app.activityReports
+    this.activityReport = this.fb.group(
+      {
+        agentId: [null, Validators.required],
+        project: ['', [Validators.required, Validators.minLength(3)]],
+        startDate: [null, Validators.required],
+        endDate: [null, Validators.required],
+        activity: ['', [Validators.required, Validators.minLength(10)]],
+      },
+      {
+        validators: this.dateRangeValidator,
+      }
     );
 
     this.storedAgents$ = this.store.select((state) => state.app.agents);
   }
 
+  get project() {
+    return this.activityReport.get('project');
+  }
+
+  get startDate() {
+    return this.activityReport.get('startDate');
+  }
+
+  get endDate() {
+    return this.activityReport.get('endDate');
+  }
+
+  get activity() {
+    return this.activityReport.get('activity');
+  }
+
   isFieldInvalid(field: string): boolean {
-    return (
-      (this.activityReport.get(field)?.invalid &&
-        this.activityReport.get(field)?.touched) ??
-      false
-    );
+    const control = this.activityReport.get(field);
+    return (control?.invalid && (control?.touched || control?.dirty)) ?? false;
+  }
+
+  dateRangeValidator(formGroup: FormGroup) {
+    const startDate = formGroup.get('startDate')?.value;
+    const endDate = formGroup.get('endDate')?.value;
+    if (startDate && endDate && new Date(startDate) > new Date(endDate)) {
+      formGroup.get('endDate')?.setErrors({ dateRange: true });
+      return { dateRange: true };
+    }
+    return null;
   }
 
   onSubmit() {

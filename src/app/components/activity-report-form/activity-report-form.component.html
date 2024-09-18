@@ -1,55 +1,67 @@
 <div class="form-container">
   <h1>Reporter une activité</h1>
-  @if(storedAgents$ | async; as agents) { @if(agents.length > 0) {
   <form [formGroup]="activityReport" (ngSubmit)="onSubmit()">
-    <div>
-      <select name="agents" formControlName="agentId">
-        <option [value]="null">-- Sélectionner un agent --</option>
-        @for (agent of agents; track $index) {
-        <option [value]="agent.id">
-          {{ agent.lastName }} {{ agent.firstName }}
-        </option>
-        }
-      </select>
-    </div>
+    <select name="agents" formControlName="agentId">
+      <option [value]="null">-- Sélectionner un agent --</option>
+      @for (agent of storedAgents$ | async; track $index) {
+      <option [value]="agent.id">
+        {{ agent.lastName }} {{ agent.firstName }}
+      </option>
+      }
+    </select>
+    @if (isFieldInvalid('agentId')) {
+    <div class="error">Agent is required.</div>
+    }
 
     <input id="project" formControlName="project" placeholder="Projet" />
+    @if (isFieldInvalid('project')) {
+    <div class="error">
+      Project is required and must be at least 3 characters long.
+    </div>
+    }
+
     <div>
       <div>
-        <label>Date de début:</label>
+        <label>Date de début:</label> <br />
         <input type="date" id="startDate" formControlName="startDate" />
+        @if (isFieldInvalid('startDate')) {
+        <div class="error">La date de début est requise.</div>
+        }
       </div>
       <div>
         <label>Date de fin:</label>
         <input type="date" id="endDate" formControlName="endDate" />
+        @if (isFieldInvalid('endDate')) {
+        <div class="error">La date de fin est requise.</div>
+        } @if (activityReport.errors?.['dateRange']) {
+        <div class="error">
+          La date de fin doit être postérieure à la date de début.
+        </div>
+        }
       </div>
     </div>
+
     <textarea
       id="activity"
       formControlName="activity"
       placeholder="Elements réalisées"
     ></textarea>
-    <button [disabled]="activityReport.invalid" type="submit">Envoyer</button>
-  </form>
-
-  }@else {
-  <p>Vous avez aucun agent, commencez par en créer un.</p>
-  <button routerLink="/agents">Ajouter un agent</button>
-  } } @if(storedActivityReport$ | async; as activities) { @if(activities.length
-  > 0) {
-
-  <h3>Stored Activities:</h3>
-  <ul>
-    @for (activity of activities; track $index) {
-    <li>
-      {{ activity.activity }} - {{ activity.startDate }}
-      {{ activity.endDate }} -
-      {{ activity.project }}
-    </li>
+    @if (isFieldInvalid('activity')) {
+    <div class="error">
+      Activity is required and must be at least 10 characters long.
+    </div>
+    } @if (errorMessage) {
+    <div class="error">
+      {{ errorMessage }}
+    </div>
     }
-  </ul>
 
-  @if (errorMessage) {
-  <p>{{ errorMessage }}</p>
-  } }}
+    <button
+      [ngClass]="{ disabled: activityReport.invalid }"
+      [disabled]="activityReport.invalid"
+      type="submit"
+    >
+      Envoyer
+    </button>
+  </form>
 </div>
