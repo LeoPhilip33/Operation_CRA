@@ -14,6 +14,7 @@ import { Legend } from '../../interfaces/legend';
 import { Agent } from '../../interfaces/agent';
 import { ActivityReport } from '../../interfaces/activity-report';
 import { Leave } from '../../interfaces/leave';
+import { AgentStatus } from '../../enum/agentStatus';
 
 @Component({
   selector: 'app-calendar',
@@ -33,6 +34,7 @@ export class CalendarComponent implements OnInit {
   currentMonth: Date = new Date();
   days: Date[] = [];
   weeks: Date[][] = [];
+  AgentStatus = AgentStatus;
 
   ngOnInit() {
     this.loadDays();

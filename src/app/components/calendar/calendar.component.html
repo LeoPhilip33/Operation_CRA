@@ -31,8 +31,9 @@
         <div
           class="item"
           [ngStyle]="{
-            'background-color': getBackGroundColor('Agent absent'),
-            'border-left': '1px solid ' + getBorderColor('Agent absent')
+            'background-color': getBackGroundColor(AgentStatus.AGENT_ABSENT),
+            'border-left':
+              '1px solid ' + getBorderColor(AgentStatus.AGENT_ABSENT)
           }"
           (click)="viewAgentLeave(leave)"
         >
@@ -44,8 +45,9 @@
         <div
           class="item"
           [ngStyle]="{
-            'background-color': getBackGroundColor('Agent présent'),
-            'border-left': '1px solid ' + getBorderColor('Agent présent')
+            'background-color': getBackGroundColor(AgentStatus.AGENT_PRESENT),
+            'border-left':
+              '1px solid ' + getBorderColor(AgentStatus.AGENT_PRESENT)
           }"
           (click)="viewCra(activity)"
         >

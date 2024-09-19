@@ -10,6 +10,7 @@ import { Leave } from '../../interfaces/leave';
 import { DialogComponent } from '../../components/dialog/dialog.component';
 import { ActivityReportFormComponent } from '../../components/activity-report-form/activity-report-form.component';
 import { LeaveFormComponent } from '../../components/leave-form/leave-form.component';
+import { AgentStatus } from '../../enum/agentStatus';
 
 @Component({
   selector: 'app-home',
@@ -54,12 +55,12 @@ export class HomeComponent implements OnInit {
     {
       backgroundColor: '#ffcfd2',
       borderColor: '#CC010F',
-      label: 'Agent absent',
+      label: AgentStatus.AGENT_ABSENT,
     },
     {
       backgroundColor: '#d2d2ff',
       borderColor: '#0d0dba',
-      label: 'Agent présent',
+      label: AgentStatus.AGENT_PRESENT,
     },
   ];
 
