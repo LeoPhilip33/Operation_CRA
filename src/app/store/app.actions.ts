@@ -10,6 +10,13 @@ export const addAgent = createAction(
   }>()
 );
 
+export const deleteAgent = createAction(
+  '[Form] Delete Agent',
+  props<{
+    id: number;
+  }>()
+);
+
 export const addLeave = createAction(
   '[Form] Add Leave',
   props<{

@@ -7,7 +7,7 @@ import {
 } from '@angular/forms';
 import { Observable } from 'rxjs/internal/Observable';
 import { Store } from '@ngrx/store';
-import { addAgent } from '../../store/app.actions';
+import { addAgent, deleteAgent } from '../../store/app.actions';
 import { CommonModule } from '@angular/common';
 import { take, tap } from 'rxjs';
 import { Agent } from '../../interfaces/agent';
@@ -51,6 +51,10 @@ export class AgentFormComponent {
   isFieldInvalid(field: string): boolean {
     const control = this.agents.get(field);
     return (control?.invalid && (control?.touched || control?.dirty)) ?? false;
+  }
+
+  deleteAgent(id: number) {
+    this.store.dispatch(deleteAgent({ id }));
   }
 
   onSubmit() {

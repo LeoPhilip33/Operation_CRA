@@ -38,6 +38,7 @@
     @for (agent of agents; track $index) {
     <div>
       <p>{{ agent.lastName }} {{ agent.firstName }}</p>
+      <img src="assets/cross.svg" (click)="deleteAgent(agent.id)" />
     </div>
     }
   </div>

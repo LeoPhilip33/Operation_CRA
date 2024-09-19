@@ -4,6 +4,7 @@ import {
   addAgent,
   addLeave,
   deleteActivityReport,
+  deleteAgent,
   deleteLeave,
   updateActivityReport,
   updateLeave,
@@ -45,6 +46,10 @@ const _appReducer = createReducer(
   on(addAgent, (state, { agentData }) => ({
     ...state,
     agents: [...state.agents, agentData],
+  })),
+  on(deleteAgent, (state, { id }) => ({
+    ...state,
+    agents: state.agents.filter((agent) => agent.id !== id),
   })),
 
   on(addActivityReport, (state, { report }) => ({
