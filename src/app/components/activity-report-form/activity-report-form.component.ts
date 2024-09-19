@@ -30,7 +30,7 @@ export class ActivityReportFormComponent implements OnInit {
 
   activityReport: FormGroup;
   storedAgents$: Observable<Agent[]>;
-  errorMessage: string | null;
+  errorMessage: string | null = null;
   storedActivityReport$: Observable<ActivityReport[]>;
 
   constructor(
@@ -39,7 +39,6 @@ export class ActivityReportFormComponent implements OnInit {
       app: { activityReports: ActivityReport[]; agents: Agent[] };
     }>
   ) {
-    this.errorMessage = null;
     this.activityReport = this.fb.group(
       {
         id: [0],
@@ -118,17 +117,16 @@ export class ActivityReportFormComponent implements OnInit {
               this.activityReport.patchValue({
                 id: activityReport ? activityReport.length : 0,
               });
+              this.store.dispatch(
+                addActivityReport({ report: this.activityReport.value })
+              );
+              this.activityReport.reset();
             })
           )
           .subscribe();
-
-        this.store.dispatch(
-          addActivityReport({ report: this.activityReport.value })
-        );
-        this.activityReport.reset();
       }
     } else {
-      this.errorMessage = 'Form is invalid';
+      this.errorMessage = 'Vérifier les champs du formulaire';
     }
   }
 }

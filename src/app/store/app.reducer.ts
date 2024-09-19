@@ -4,6 +4,7 @@ import {
   addAgent,
   addLeave,
   updateActivityReport,
+  updateLeave,
 } from './app.actions';
 import { Agent } from '../interfaces/agent';
 import { ActivityReport } from '../interfaces/activity-report';
@@ -58,6 +59,12 @@ const _appReducer = createReducer(
   on(addLeave, (state, { leaveData }) => ({
     ...state,
     leaves: [...state.leaves, leaveData],
+  })),
+  on(updateLeave, (state, { id, leave }) => ({
+    ...state,
+    leaves: state.leaves.map((elementLeave) =>
+      elementLeave.id === id ? { ...elementLeave, ...leave } : elementLeave
+    ),
   }))
 );
 

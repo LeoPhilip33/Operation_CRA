@@ -1,5 +1,5 @@
 <div class="form-container">
-  <h1>Poser une absence</h1>
+  <h1>@if(!selectedLeave) { Poser } @else { Modifier } une absence</h1>
   @if(storedAgents$ | async; as agents) { @if(agents.length > 0) {
   <form [formGroup]="leave" (ngSubmit)="onSubmit()">
     <select name="agents" formControlName="agentId">
@@ -54,6 +54,11 @@
         }
       </div>
     </div>
+    @if (errorMessage) {
+    <p class="error">
+      {{ errorMessage }}
+    </p>
+    }
     <button
       [ngClass]="{ disabled: leave.invalid }"
       [disabled]="leave.invalid"

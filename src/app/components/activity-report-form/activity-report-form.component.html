@@ -1,5 +1,7 @@
 <div class="form-container">
-  <h1>Reporter une activité</h1>
+  <h1>
+    @if(!selectedActivityReport) { Reporter } @else { Modifier } une activité
+  </h1>
   @if(storedAgents$ | async; as agents;) { @if(agents.length > 0) {
   <form [formGroup]="activityReport" (ngSubmit)="onSubmit()">
     <select name="agents" formControlName="agentId">

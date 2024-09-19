@@ -1,98 +1,99 @@
-    .calendar-controls {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
+.legends-container {
+    display: flex;
+    gap: 1rem;
+
+    >div {
+        font-size: 0.8rem;
         padding: 0.5rem;
+        border-radius: 0.5rem;
+    }
+}
+
+.calendar-controls {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 1rem;
+    padding: 0.5rem;
+    background-color: #f4f4f4;
+    border-bottom: 1px solid #ddd;
+}
+
+.calendar {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    height: 80vh;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    box-sizing: border-box;
+
+    .calendar-header {
+        display: flex;
         background-color: #f4f4f4;
         border-bottom: 1px solid #ddd;
+        font-weight: bold;
+        justify-content: space-around;
+
+        div {
+            flex: 1;
+            text-align: center;
+            padding: 0.5rem;
+            box-sizing: border-box;
+        }
     }
 
-    .calendar {
-        display: flex;
-        flex-direction: column;
-        width: 100%;
-        height: 80vh;
-        border: 1px solid #ddd;
-        border-radius: 4px;
-        box-sizing: border-box;
 
-        .calendar-header {
+    .calendar-body {
+        display: grid;
+        grid-template-columns: repeat(7, 1fr);
+        height: 100%;
+
+        .calendar-day {
             display: flex;
-            background-color: #f4f4f4;
+            flex-direction: column;
+            flex: 1;
+            padding: 1rem;
+            border-right: 1px solid #ddd;
             border-bottom: 1px solid #ddd;
-            font-weight: bold;
-            justify-content: space-around;
 
-            div {
-                flex: 1;
-                text-align: center;
-                padding: 0.5rem;
-                box-sizing: border-box;
-            }
-        }
-
-
-        .calendar-body {
-            display: grid;
-            grid-template-columns: repeat(7, 1fr);
-
-            .legends-container {
-                display: flex;
-                gap: 1rem;
-                margin-top: 2rem;
-
-                >div {
-                    font-size: 0.8rem;
-                    padding: 0.5rem;
-                    border-radius: 0.5rem;
-                }
+            &.today {
+                background-color: #e0e0e0;
             }
 
-            .calendar-day {
+            .container-items {
+                cursor: pointer;
                 display: flex;
                 flex-direction: column;
-                flex: 1;
-                padding: 1rem;
-                border-right: 1px solid #ddd;
-                border-bottom: 1px solid #ddd;
+                gap: 0.2rem;
 
-                &.today {
-                    background-color: #e0e0e0;
-                }
+                .item {
+                    padding: 0.5rem;
+                    border-left: 1px solid red;
+                    background-color: #ffc6c6;
 
-                .container-items {
-                    cursor: pointer;
-                    display: flex;
-                    flex-direction: column;
-                    gap: 0.2rem;
-
-                    .item {
-                        padding: 0.5rem;
-                        border-left: 1px solid red;
-                        background-color: #ffc6c6;
-
-                        >p {
-                            overflow: hidden;
-                            text-overflow: ellipsis;
-                            margin: 0;
-                            font-size: 0.7rem;
-                            width: 100%;
-                        }
+                    >p {
+                        overflow: hidden;
+                        text-overflow: ellipsis;
+                        margin: 0;
+                        font-size: 0.7rem;
+                        width: 100%;
                     }
                 }
-
-
-
             }
 
-            .calendar-row {
-                display: flex;
-                flex: 1;
 
-                .calendar-day:last-child {
-                    border-right: none;
-                }
-            }
 
         }
+
+        .calendar-row {
+            display: flex;
+            flex: 1;
+
+            .calendar-day:last-child {
+                border-right: none;
+            }
+        }
+
     }
+}

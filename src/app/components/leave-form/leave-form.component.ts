@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import {
   AbstractControlOptions,
   FormBuilder,
@@ -8,8 +8,8 @@ import {
 } from '@angular/forms';
 import { Store } from '@ngrx/store';
 import { Leave } from '../../interfaces/leave';
-import { addLeave } from '../../store/app.actions';
-import { Observable } from 'rxjs';
+import { addLeave, updateLeave } from '../../store/app.actions';
+import { Observable, take, tap } from 'rxjs';
 import { CommonModule } from '@angular/common';
 import { Agent } from '../../interfaces/agent';
 import { RouterModule } from '@angular/router';
@@ -23,10 +23,12 @@ import { RouterModule } from '@angular/router';
 })
 export class LeaveFormComponent implements OnInit {
   @Input() selectedLeave: Leave | null = null;
+  @Output() isLeaveUpdated = new EventEmitter<boolean>(false);
 
   leave: FormGroup;
   storedAgents$: Observable<Agent[]>;
   storedLeaves$: Observable<Leave[]>;
+  errorMessage: string | null = null;
 
   constructor(
     private fb: FormBuilder,
@@ -36,6 +38,7 @@ export class LeaveFormComponent implements OnInit {
   ) {
     this.leave = this.fb.group(
       {
+        id: [0],
         agentId: [null, Validators.required],
         startDate: [null, Validators.required],
         endDate: [null, Validators.required],
@@ -90,8 +93,28 @@ export class LeaveFormComponent implements OnInit {
 
   onSubmit() {
     if (this.leave.valid) {
-      this.store.dispatch(addLeave({ leaveData: this.leave.value }));
-      this.leave.reset();
+      this.errorMessage = null;
+
+      if (this.selectedLeave) {
+        this.store.dispatch(
+          updateLeave({ id: this.selectedLeave.id, leave: this.leave.value })
+        );
+
+        this.isLeaveUpdated.emit(true);
+      } else {
+        this.storedLeaves$
+          .pipe(
+            take(1),
+            tap((leaves) => {
+              this.leave.patchValue({ id: leaves ? leaves.length : 0 });
+              this.store.dispatch(addLeave({ leaveData: this.leave.value }));
+              this.leave.reset();
+            })
+          )
+          .subscribe();
+      }
+    } else {
+      this.errorMessage = 'Vérifier les champs du formulaire';
     }
   }
 }

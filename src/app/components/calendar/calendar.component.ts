@@ -33,7 +33,6 @@ export class CalendarComponent implements OnInit {
   currentMonth: Date = new Date();
   days: Date[] = [];
   weeks: Date[][] = [];
-  selectedCra: ActivityReport | null = null;
 
   ngOnInit() {
     this.loadDays();
