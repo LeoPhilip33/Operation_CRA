@@ -9,24 +9,24 @@ L'application "Opération CRA" a été développée pour Groupama Gan Vie dans l
 Pour lancer le projet en utilisant Angular, suivez ces étapes :
 
 1. Clonez le dépôt GitHub :
-   ```bash
-   git clone https://github.com/LeoPhilip33/Operation_CRA.git
-   ```
+    ```bash
+    git clone https://github.com/LeoPhilip33/Operation_CRA.git
+    ```
 
 2. Accédez au répertoire du projet :
-   ```bash
-   cd Operation_CRA
-   ```
+     ```bash
+     cd Operation_CRA
+     ```
 
  3. Installez les dépendances :
-   ```bash
-   npm install
-   ```
+     ```bash
+     npm install
+     ```
 
 4. Démarrez le serveur de développement Angular :
-   ```bash
-   ng serve
-   ```
+    ```bash
+    ng serve
+    ```
 
 5. Accédez à l’application via votre navigateur à l’adresse [http://localhost:4200](http://localhost:4200)
 
@@ -41,19 +41,19 @@ Le projet a également été dockerisé. Voici les étapes pour lancer le projet
 1. Assurez-vous d’avoir [Docker](https://www.docker.com/) installé sur votre machine.
 
 2. Accédez au répertoire du projet :
-   ```bash
-   cd Operation_CRA
-   ```
+    ```bash
+    cd Operation_CRA
+    ```
 
 3. Construisez l’image Docker :
-   ```bash
-   docker build -t operation-cra .
-   ```
+    ```bash
+    docker build -t operation-cra .
+    ```
 
 4. Construisez l’image Docker :
-   ```bash
-   docker run -p 4200:4200 operation-cra
-   ```
+    ```bash
+    docker run -p 4200:4200 operation-cra
+    ```
 
 5. Accédez à l’application dockérisé via votre navigateur à l’adresse [http://localhost:4200](http://localhost:4200)
 
