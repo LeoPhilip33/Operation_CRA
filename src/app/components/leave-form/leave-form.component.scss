@@ -7,6 +7,35 @@
         gap: 1rem;
         width: clamp(30rem, 50vw, 50rem);
 
+        .select-container {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+
+            select {
+                width: 100%;
+            }
+
+            p {
+                margin: 0;
+
+                span {
+                    font-weight: bold;
+
+                    &.error {
+                        color: red;
+                    }
+
+                    &.success {
+                        color: green;
+                    }
+                }
+
+            }
+        }
+
+
+
         >div {
             display: flex;
             gap: 1rem;
@@ -20,8 +49,6 @@
                     width: 100%;
                 }
             }
-
-
         }
     }
 

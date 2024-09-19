@@ -57,7 +57,7 @@ describe('LeaveFormComponent', () => {
     expect(component.leave.get('agentId')?.value).toBeNull();
     expect(component.leave.get('startDate')?.value).toBeNull();
     expect(component.leave.get('endDate')?.value).toBeNull();
-    expect(component.leave.get('reason')?.value).toBeNull();
+    expect(component.leave.get('type')?.value).toBeNull();
   });
 
   it('should display a list of agents in the select dropdown', () => {
@@ -74,7 +74,7 @@ describe('LeaveFormComponent', () => {
     component.leave.get('agentId')?.setValue(null);
     component.leave.get('startDate')?.setValue(null);
     component.leave.get('endDate')?.setValue(null);
-    component.leave.get('reason')?.setValue(null);
+    component.leave.get('type')?.setValue(null);
 
     Object.keys(component.leave.controls).forEach((key) => {
       const control = component.leave.get(key);
@@ -93,7 +93,7 @@ describe('LeaveFormComponent', () => {
     expect(component.isFieldInvalid('agentId')).toBeTrue();
     expect(component.isFieldInvalid('startDate')).toBeTrue();
     expect(component.isFieldInvalid('endDate')).toBeTrue();
-    expect(component.isFieldInvalid('reason')).toBeTrue();
+    expect(component.isFieldInvalid('type')).toBeTrue();
   });
 
   it('should dispatch addLeave action when form is valid and submitted', () => {
@@ -101,7 +101,7 @@ describe('LeaveFormComponent', () => {
       agentId: 1,
       startDate: new Date('2024-01-01'),
       endDate: new Date('2024-01-10'),
-      reason: 'paid-leave',
+      type: 'paid-leave',
     });
     fixture.detectChanges();
 
@@ -116,7 +116,7 @@ describe('LeaveFormComponent', () => {
           agentId: 1,
           startDate: new Date('2024-01-01'),
           endDate: new Date('2024-01-10'),
-          reason: 'paid-leave',
+          type: 'paid-leave',
         },
       })
     );
@@ -136,7 +136,7 @@ describe('LeaveFormComponent', () => {
       agentId: 1,
       startDate: '2024-01-01',
       endDate: '2024-01-10',
-      reason: 'paid-leave',
+      type: 'paid-leave',
     });
     fixture.detectChanges();
 

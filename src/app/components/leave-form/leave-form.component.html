@@ -13,14 +13,27 @@
     @if (isFieldInvalid('agentId')) {
     <p class="error">Un agent est requis.</p>
     }
-    <select formControlName="reason" id="leave-type" name="leave-type">
-      @if(!selectedLeave) {
-      <option [value]="null">-- Type de congés --</option>
+    <div class="select-container">
+      <select formControlName="type" id="leave-type" name="leave-type">
+        @if(!selectedLeave) {
+        <option [value]="null">-- Type de congés --</option>
+        }
+        <option value="paid-leave">Conges Payés</option>
+        <option value="sick">Maladie</option></select
+      >@if(!selectedLeave && leave.get('agentId')?.value) {
+      <p>
+        <span
+          [ngClass]="{
+            error: remainingLeaves <= 2,
+            success: remainingLeaves > 2
+          }"
+          >{{ remainingLeaves }}</span
+        >
+        jours de congés restants.
+      </p>
       }
-      <option value="paid-leave">Conges Payés</option>
-      <option value="sick">Maladie</option>
-    </select>
-    @if (isFieldInvalid('reason')) {
+    </div>
+    @if (isFieldInvalid('type')) {
     <p class="error">La raison est requise.</p>
     }
     <div>

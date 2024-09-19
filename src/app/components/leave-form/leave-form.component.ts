@@ -14,7 +14,7 @@ import {
   updateAgent,
   updateLeave,
 } from '../../store/app.actions';
-import { catchError, EMPTY, Observable, switchMap, take, tap } from 'rxjs';
+import { catchError, EMPTY, map, Observable, switchMap, take, tap } from 'rxjs';
 import { CommonModule } from '@angular/common';
 import { Agent } from '../../interfaces/agent';
 import { RouterModule } from '@angular/router';
@@ -56,7 +56,7 @@ export class LeaveFormComponent implements OnInit {
         agentId: [null, Validators.required],
         startDate: [null, Validators.required],
         endDate: [null, Validators.required],
-        reason: [null, Validators.required],
+        type: [null, Validators.required],
       },
       {
         validators: this
@@ -83,8 +83,26 @@ export class LeaveFormComponent implements OnInit {
     return this.leave.get('endDate');
   }
 
-  get reason() {
-    return this.leave.get('reason');
+  get type() {
+    return this.leave.get('type');
+  }
+
+  get remainingLeaves(): number {
+    let leaveBalance = 0;
+    this.storedAgents$
+      .pipe(
+        take(1),
+        map((agents) => {
+          const selectedAgent = agents.find(
+            (a) => Number(a.id) === Number(this.leave.value.agentId)
+          );
+          if (selectedAgent) {
+            leaveBalance = selectedAgent.leaveBalance;
+          }
+        })
+      )
+      .subscribe();
+    return leaveBalance;
   }
 
   ngOnInit(): void {
@@ -194,7 +212,7 @@ export class LeaveFormComponent implements OnInit {
   onSubmit() {
     if (this.leave.valid) {
       this.errorMessage = null;
-      const { startDate, endDate, agentId, reason } = this.leave.value;
+      const { startDate, endDate, agentId, type } = this.leave.value;
       const startDateObj = new Date(startDate);
       const endDateObj = new Date(endDate);
 
@@ -241,7 +259,7 @@ export class LeaveFormComponent implements OnInit {
               throw new Error(this.errorMessage);
             }
 
-            const isSickLeave = reason === 'sick';
+            const isSickLeave = type === 'sick';
             const previousLeaveDays = this.previousLeaveData
               ? this.countWeekdays(
                   new Date(this.previousLeaveData.startDate),
@@ -252,8 +270,8 @@ export class LeaveFormComponent implements OnInit {
             let updatedAgents = [...agents];
             if (this.selectedLeave) {
               if (this.previousLeaveData) {
-                if (this.previousLeaveData.reason !== reason) {
-                  if (this.previousLeaveData.reason !== 'sick' && isSickLeave) {
+                if (this.previousLeaveData.type !== type) {
+                  if (this.previousLeaveData.type !== 'sick' && isSickLeave) {
                     updatedAgents = agents.map((a) => {
                       if (Number(a.id) === Number(agentId)) {
                         return {
@@ -265,7 +283,7 @@ export class LeaveFormComponent implements OnInit {
                     });
                   } else if (
                     !isSickLeave &&
-                    this.previousLeaveData.reason === 'sick'
+                    this.previousLeaveData.type === 'sick'
                   ) {
                     updatedAgents = agents.map((a) => {
                       if (Number(a.id) === Number(agentId)) {
@@ -278,7 +296,7 @@ export class LeaveFormComponent implements OnInit {
                     });
                   } else if (
                     !isSickLeave &&
-                    this.previousLeaveData.reason !== 'sick'
+                    this.previousLeaveData.type !== 'sick'
                   ) {
                     updatedAgents = agents.map((a) => {
                       if (Number(a.id) === Number(agentId)) {
@@ -343,7 +361,7 @@ export class LeaveFormComponent implements OnInit {
                   leave: {
                     startDate: this.leave.value.startDate,
                     endDate: this.leave.value.endDate,
-                    reason: this.leave.value.reason,
+                    type: this.leave.value.type,
                   },
                 })
               );
@@ -356,6 +374,7 @@ export class LeaveFormComponent implements OnInit {
               );
             }
 
+            this.leave.reset();
             this.formSubmitted = true;
           }),
           catchError((err) => {

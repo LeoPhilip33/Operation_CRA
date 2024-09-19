@@ -122,7 +122,7 @@ describe('CalendarComponent', () => {
       id: 1,
       startDate: new Date(),
       endDate: new Date(),
-      reason: 'Vacation',
+      type: 'Vacation',
       agentId: 0,
     };
 

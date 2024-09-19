@@ -15,6 +15,7 @@ import { Agent } from '../../interfaces/agent';
 import { ActivityReport } from '../../interfaces/activity-report';
 import { Leave } from '../../interfaces/leave';
 import { AgentStatus } from '../../enum/agentStatus';
+import { fr } from 'date-fns/locale';
 
 @Component({
   selector: 'app-calendar',
@@ -73,7 +74,7 @@ export class CalendarComponent implements OnInit {
   }
 
   format(date: Date): string {
-    return format(date, 'MMMM yyyy');
+    return format(date, 'MMMM yyyy', { locale: fr });
   }
 
   getBackGroundColor(element: string): string {

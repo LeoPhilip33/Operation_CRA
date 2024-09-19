@@ -73,7 +73,7 @@ describe('HomeComponent', () => {
       agentId: 1,
       startDate: new Date('2024-09-19T14:19:29Z'),
       endDate: new Date('2024-09-19T14:19:29Z'),
-      reason: 'Vacation',
+      type: 'Vacation',
     };
 
     component.computeViewLeave(leave);
