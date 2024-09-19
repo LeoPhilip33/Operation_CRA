@@ -6,12 +6,19 @@ import {
   Validators,
 } from '@angular/forms';
 import { Observable } from 'rxjs/internal/Observable';
-import { Store } from '@ngrx/store';
-import { addAgent, deleteAgent } from '../../store/app.actions';
+import { select, Store } from '@ngrx/store';
+import {
+  addAgent,
+  deleteActivityReport,
+  deleteAgent,
+  deleteLeave,
+} from '../../store/app.actions';
 import { CommonModule } from '@angular/common';
-import { take, tap } from 'rxjs';
+import { of, switchMap, take, tap } from 'rxjs';
 import { Agent } from '../../interfaces/agent';
 import { ToastComponent } from '../toast/toast.component';
+import { ActivityReport } from '../../interfaces/activity-report';
+import { Leave } from '../../interfaces/leave';
 
 @Component({
   selector: 'app-agent-form',
@@ -22,14 +29,20 @@ import { ToastComponent } from '../toast/toast.component';
 })
 export class AgentFormComponent {
   agents: FormGroup;
-  agentsData$: Observable<Agent[]>;
+  storedAgentsData$: Observable<Agent[]>;
+  storedActivityReports$: Observable<ActivityReport[]>;
+  storedLeaves$: Observable<Leave[]>;
   errorMessage: string | null;
   formSubmitted: boolean = false;
 
   constructor(
     private fb: FormBuilder,
     private store: Store<{
-      app: { agents: Agent[] };
+      app: {
+        agents: Agent[];
+        activityReports: ActivityReport[];
+        leaves: Leave[];
+      };
     }>
   ) {
     this.errorMessage = null;
@@ -40,7 +53,11 @@ export class AgentFormComponent {
       leaveBalance: [5],
     });
 
-    this.agentsData$ = this.store.select((state) => state.app.agents);
+    this.storedLeaves$ = this.store.select((state) => state.app.leaves);
+    this.storedAgentsData$ = this.store.select((state) => state.app.agents);
+    this.storedActivityReports$ = this.store.select(
+      (state) => state.app.activityReports
+    );
   }
 
   get lastName() {
@@ -57,11 +74,36 @@ export class AgentFormComponent {
   }
 
   deleteAgent(id: number) {
-    this.store.dispatch(deleteAgent({ id }));
+    this.store
+      .pipe(
+        select((state) => state.app.activityReports),
+        tap((activityReports) => {
+          const activitiesToDelete = activityReports.filter(
+            (report) => Number(report.agentId) === Number(id)
+          );
+          activitiesToDelete.forEach((activity) =>
+            this.store.dispatch(deleteActivityReport({ id: activity.id }))
+          );
+        }),
+        switchMap(() => this.store.pipe(select((state) => state.app.leaves))),
+        tap((leaves) => {
+          const leavesToDelete = leaves.filter(
+            (leave) => Number(leave.agentId) === Number(id)
+          );
+          leavesToDelete.forEach((leave) =>
+            this.store.dispatch(deleteLeave({ id: leave.id }))
+          );
+        }),
+        switchMap(() => {
+          this.store.dispatch(deleteAgent({ id }));
+          return of(null);
+        })
+      )
+      .subscribe();
   }
 
   onSubmit() {
-    this.agentsData$
+    this.storedAgentsData$
       .pipe(
         take(1),
         tap((agents) => {

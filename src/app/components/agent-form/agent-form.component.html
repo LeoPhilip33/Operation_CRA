@@ -31,7 +31,7 @@
     </button>
   </form>
 
-  @if(agentsData$ | async; as agents) { @if(agents.length > 0) {
+  @if(storedAgentsData$ | async; as agents) { @if(agents.length > 0) {
 
   <h3>Agents:</h3>
   <div class="agents-container">
