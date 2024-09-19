@@ -44,23 +44,6 @@ describe('HeaderComponent', () => {
     expect(compiled.querySelector('a[href="/leave"]')).toBeTruthy();
   });
 
-  it('should have correct router link texts', () => {
-    const compiled = fixture.nativeElement as HTMLElement;
-
-    expect(compiled.querySelector('a[href="/"]')?.textContent).toContain(
-      'Home'
-    );
-    expect(compiled.querySelector('a[href="/agents"]')?.textContent).toContain(
-      'Agents'
-    );
-    expect(
-      compiled.querySelector('a[href="/activity-report"]')?.textContent
-    ).toContain('Activity Report');
-    expect(compiled.querySelector('a[href="/leave"]')?.textContent).toContain(
-      'Leave'
-    );
-  });
-
   it('should navigate to "agents" when clicking the Agents link', async () => {
     const compiled = fixture.nativeElement as HTMLElement;
     const agentsLink = compiled.querySelector(

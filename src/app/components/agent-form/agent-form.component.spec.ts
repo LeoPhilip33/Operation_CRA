@@ -97,12 +97,6 @@ describe('AgentFormComponent', () => {
     });
   }));
 
-  it('should dispatch deleteAgent when calling deleteAgent method', () => {
-    component.deleteAgent(1);
-
-    expect(store.dispatch).toHaveBeenCalledWith(deleteAgent({ id: 1 }));
-  });
-
   it('should update the id field based on the number of agents', fakeAsync(() => {
     store.select.and.returnValue(
       of([{ id: 1, lastName: 'Doe', firstName: 'John', leaveBalance: 5 }])

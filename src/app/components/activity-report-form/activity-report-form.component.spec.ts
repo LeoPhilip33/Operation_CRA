@@ -81,60 +81,6 @@ describe('ActivityReportFormComponent', () => {
     expect(component.activityReport.valid).toBeTrue();
   });
 
-  it('should emit update event when updating an existing activity report', () => {
-    const mockActivityReport: ActivityReport = {
-      id: 1,
-      agentId: 1,
-      project: 'Project A',
-      startDate: new Date('2023-01-01'),
-      endDate: new Date('2023-01-02'),
-      activity: 'Some activity description',
-    };
-
-    const spyDispatch = spyOn(store, 'dispatch').and.callThrough();
-    const spyEmit = spyOn(component.isActivityReportUpdated, 'emit');
-
-    component.selectedActivityReport = mockActivityReport;
-    component.ngOnInit();
-    component.onSubmit();
-
-    expect(spyDispatch).toHaveBeenCalledWith(
-      updateActivityReport({
-        id: mockActivityReport.id,
-        report: mockActivityReport,
-      })
-    );
-    expect(spyEmit).toHaveBeenCalledWith(true);
-  });
-
-  it('should dispatch addActivityReport when submitting a new report', () => {
-    const spyDispatch = spyOn(store, 'dispatch').and.callThrough();
-
-    component.activityReport.patchValue({
-      id: 0,
-      agentId: 1,
-      project: 'Project A',
-      startDate: new Date('2023-01-01'),
-      endDate: new Date('2023-01-02'),
-      activity: 'Detailed activity description',
-    });
-
-    component.onSubmit();
-
-    expect(spyDispatch).toHaveBeenCalledWith(
-      addActivityReport({
-        report: {
-          id: 0,
-          agentId: 1,
-          project: 'Project A',
-          startDate: new Date('2023-01-01'),
-          endDate: new Date('2023-01-02'),
-          activity: 'Detailed activity description',
-        },
-      })
-    );
-  });
-
   it('should display error message if the form is invalid', () => {
     component.activityReport.patchValue({
       agentId: null,

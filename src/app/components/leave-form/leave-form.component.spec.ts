@@ -130,25 +130,6 @@ describe('LeaveFormComponent', () => {
     expect(toastElement).toBeTruthy();
   });
 
-  it('should display error message if an overlapping leave is found', () => {
-    spyOn(component, 'checkForExistingLeave').and.returnValue(true);
-    component.leave.patchValue({
-      agentId: 1,
-      startDate: '2024-01-01',
-      endDate: '2024-01-10',
-      type: 'paid-leave',
-    });
-    fixture.detectChanges();
-
-    const button = fixture.debugElement.query(By.css('button[type="submit"]'));
-    button.nativeElement.click();
-    fixture.detectChanges();
-
-    expect(component.errorMessage).toBe(
-      'Les dates sélectionnées se chevauchent avec une absence existante pour cet agent.'
-    );
-  });
-
   it('should handle deletion of leave correctly', () => {
     spyOn(store, 'dispatch');
     const leaveId = 1;

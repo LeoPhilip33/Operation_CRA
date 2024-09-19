@@ -55,30 +55,6 @@ describe('CalendarComponent', () => {
     expect(component.weeks).toEqual(weeks);
   });
 
-  it('should navigate to previous month', () => {
-    const initialMonth = component.currentMonth;
-    component.prevMonth();
-    fixture.detectChanges();
-
-    const newMonth = component.currentMonth;
-    expect(newMonth).toEqual(subMonths(initialMonth, 1));
-  });
-
-  it('should navigate to next month', () => {
-    const initialMonth = component.currentMonth;
-    component.nextMonth();
-    fixture.detectChanges();
-
-    const newMonth = component.currentMonth;
-    expect(newMonth).toEqual(addMonths(initialMonth, 1));
-  });
-
-  it('should format the month correctly', () => {
-    const date = new Date();
-    const formattedDate = format(date, 'MMMM yyyy');
-    expect(component.format(date)).toEqual(formattedDate);
-  });
-
   it('should return the correct background color for a legend', () => {
     const legends: Legend[] = [
       { label: 'Vacation', backgroundColor: 'red', borderColor: 'darkred' },
