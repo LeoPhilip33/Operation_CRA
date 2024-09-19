@@ -72,7 +72,9 @@ export class AgentFormComponent {
           if (this.agents.valid) {
             this.errorMessage = null;
             this.store.dispatch(addAgent({ agentData: this.agents.value }));
-            this.agents.reset();
+            this.agents.reset({
+              leaveBalance: 5,
+            });
 
             this.formSubmitted = true;
           } else {
