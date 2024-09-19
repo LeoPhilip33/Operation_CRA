@@ -37,6 +37,7 @@ export class AgentFormComponent {
       id: [0],
       lastName: ['', [Validators.required, Validators.minLength(3)]],
       firstName: ['', [Validators.required, Validators.minLength(3)]],
+      leaveBalance: [5],
     });
 
     this.agentsData$ = this.store.select((state) => state.app.agents);

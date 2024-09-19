@@ -7,6 +7,7 @@ import {
   deleteAgent,
   deleteLeave,
   updateActivityReport,
+  updateAgent,
   updateLeave,
 } from './app.actions';
 import { Agent } from '../interfaces/agent';
@@ -25,16 +26,19 @@ export const initialState: AppState = {
       id: 0,
       lastName: 'Doe',
       firstName: 'John',
+      leaveBalance: 5,
     },
     {
       id: 1,
       lastName: 'Philip',
       firstName: 'Léo',
+      leaveBalance: 5,
     },
     {
       id: 2,
       lastName: 'Dupont',
       firstName: 'Jean',
+      leaveBalance: 5,
     },
   ],
   activityReports: [],
@@ -46,6 +50,12 @@ const _appReducer = createReducer(
   on(addAgent, (state, { agentData }) => ({
     ...state,
     agents: [...state.agents, agentData],
+  })),
+  on(updateAgent, (state, { agentData }) => ({
+    ...state,
+    agents: state.agents.map((agent) =>
+      agent.id === agentData.id ? { ...agent, ...agentData } : agent
+    ),
   })),
   on(deleteAgent, (state, { id }) => ({
     ...state,

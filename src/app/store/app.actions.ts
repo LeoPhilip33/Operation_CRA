@@ -10,6 +10,13 @@ export const addAgent = createAction(
   }>()
 );
 
+export const updateAgent = createAction(
+  '[Form] Update Agent',
+  props<{
+    agentData: Partial<Agent>;
+  }>()
+);
+
 export const deleteAgent = createAction(
   '[Form] Delete Agent',
   props<{
