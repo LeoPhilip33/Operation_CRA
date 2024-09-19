@@ -10,25 +10,10 @@ export const addAgent = createAction(
   }>()
 );
 
-export const addActivityReport = createAction(
-  '[Form] Add Activity Report',
-  props<{
-    report: ActivityReport;
-  }>()
-);
-
 export const addLeave = createAction(
   '[Form] Add Leave',
   props<{
     leaveData: Leave;
-  }>()
-);
-
-export const updateActivityReport = createAction(
-  '[Form] Update Activity Report',
-  props<{
-    id: number;
-    report: Partial<ActivityReport>;
   }>()
 );
 
@@ -42,6 +27,28 @@ export const updateLeave = createAction(
 
 export const deleteLeave = createAction(
   '[Form] Delete Leave',
+  props<{
+    id: number;
+  }>()
+);
+
+export const addActivityReport = createAction(
+  '[Form] Add Activity Report',
+  props<{
+    report: ActivityReport;
+  }>()
+);
+
+export const updateActivityReport = createAction(
+  '[Form] Update Activity Report',
+  props<{
+    id: number;
+    report: Partial<ActivityReport>;
+  }>()
+);
+
+export const deleteActivityReport = createAction(
+  '[Form] Delete Activity Report',
   props<{
     id: number;
   }>()

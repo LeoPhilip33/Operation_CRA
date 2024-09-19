@@ -12,6 +12,7 @@ import { ActivityReport } from '../../interfaces/activity-report';
 import { Store } from '@ngrx/store';
 import {
   addActivityReport,
+  deleteActivityReport,
   updateActivityReport,
 } from '../../store/app.actions';
 import { Agent } from '../../interfaces/agent';
@@ -85,6 +86,11 @@ export class ActivityReportFormComponent implements OnInit {
   isFieldInvalid(field: string): boolean {
     const control = this.activityReport.get(field);
     return (control?.invalid && (control?.touched || control?.dirty)) ?? false;
+  }
+
+  deleteActivityReport(activityReportId: number) {
+    this.store.dispatch(deleteActivityReport({ id: activityReportId }));
+    this.isActivityReportUpdated.emit(true);
   }
 
   dateRangeValidator(formGroup: FormGroup) {

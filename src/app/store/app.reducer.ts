@@ -3,6 +3,7 @@ import {
   addActivityReport,
   addAgent,
   addLeave,
+  deleteActivityReport,
   deleteLeave,
   updateActivityReport,
   updateLeave,
@@ -45,6 +46,7 @@ const _appReducer = createReducer(
     ...state,
     agents: [...state.agents, agentData],
   })),
+
   on(addActivityReport, (state, { report }) => ({
     ...state,
     activityReports: [...state.activityReports, report],
@@ -57,6 +59,13 @@ const _appReducer = createReducer(
         : activityReport
     ),
   })),
+  on(deleteActivityReport, (state, { id }) => ({
+    ...state,
+    activityReports: state.activityReports.filter(
+      (activityReport) => activityReport.id !== id
+    ),
+  })),
+
   on(addLeave, (state, { leaveData }) => ({
     ...state,
     leaves: [...state.leaves, leaveData],

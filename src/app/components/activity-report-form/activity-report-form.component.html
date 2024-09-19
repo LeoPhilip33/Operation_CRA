@@ -67,6 +67,16 @@
     >
       @if(selectedActivityReport) { Modifier } @else { Ajouter }
     </button>
+
+    @if(selectedActivityReport) {
+    <button
+      (click)="deleteActivityReport(selectedActivityReport.id)"
+      class="delete"
+      type="button"
+    >
+      Supprimer
+    </button>
+    }
   </form>
   } @else {
   <p>Vous avez aucun agent, commencez par en créer un.</p>
