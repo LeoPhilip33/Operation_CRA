@@ -2,6 +2,7 @@
   <h1>@if(!selectedLeave) { Poser } @else { Modifier } une absence</h1>
   @if(storedAgents$ | async; as agents) { @if(agents.length > 0) {
   <form [formGroup]="leave" (ngSubmit)="onSubmit()">
+    @if(!selectedLeave) {
     <select name="agents" formControlName="agentId">
       <option [value]="null">-- Sélectionner un agent --</option>
       @for (agent of agents; track $index) {
@@ -10,7 +11,7 @@
       </option>
       }
     </select>
-    @if (isFieldInvalid('agentId')) {
+    } @if (isFieldInvalid('agentId')) {
     <p class="error">Un agent est requis.</p>
     }
     <div class="select-container">

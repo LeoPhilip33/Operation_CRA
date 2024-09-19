@@ -50,7 +50,7 @@
           (click)="viewAgentLeave(leave)"
         >
           @if(getAgentById(leave.agentId); as agent) {
-          <p>{{ agent.firstName }} {{ agent.lastName }} - En congé</p>
+          <p>{{ agent.lastName }} {{ agent.firstName }} - En congé</p>
           }
         </div>
         } @for (activity of getActivityForDay(day); track $index) {

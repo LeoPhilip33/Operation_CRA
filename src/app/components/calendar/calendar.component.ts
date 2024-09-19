@@ -7,8 +7,9 @@ import {
   subMonths,
   addMonths,
   format,
-  parseISO,
   isWithinInterval,
+  startOfDay,
+  endOfDay,
 } from 'date-fns';
 import { Legend } from '../../interfaces/legend';
 import { Agent } from '../../interfaces/agent';
@@ -130,8 +131,8 @@ export class CalendarComponent implements OnInit {
     }
 
     return this.leaves.filter((leave) => {
-      const startDate = parseISO(leave.startDate.toString());
-      const endDate = parseISO(leave.endDate.toString());
+      const startDate = startOfDay(new Date(leave.startDate));
+      const endDate = endOfDay(new Date(leave.endDate));
       return isWithinInterval(day, { start: startDate, end: endDate });
     });
   }
@@ -142,8 +143,8 @@ export class CalendarComponent implements OnInit {
     }
 
     return this.activityReports.filter((report) => {
-      const startDate = parseISO(report.startDate.toString());
-      const endDate = parseISO(report.endDate.toString());
+      const startDate = startOfDay(new Date(report.startDate));
+      const endDate = endOfDay(new Date(report.endDate));
       return isWithinInterval(day, { start: startDate, end: endDate });
     });
   }
