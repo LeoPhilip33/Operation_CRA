@@ -18,6 +18,8 @@ import {
 import { Agent } from '../../interfaces/agent';
 import { RouterModule } from '@angular/router';
 import { ToastComponent } from '../toast/toast.component';
+import { Leave } from '../../interfaces/leave';
+import { GlobalService } from '../../services/global.service';
 
 @Component({
   selector: 'app-activity-report-form',
@@ -32,14 +34,20 @@ export class ActivityReportFormComponent implements OnInit {
 
   activityReport: FormGroup;
   storedAgents$: Observable<Agent[]>;
+  storedLeaves$: Observable<Leave[]>;
   errorMessage: string | null = null;
   storedActivityReport$: Observable<ActivityReport[]>;
   formSubmitted: boolean = false;
 
   constructor(
     private fb: FormBuilder,
+    private globalService: GlobalService,
     private store: Store<{
-      app: { activityReports: ActivityReport[]; agents: Agent[] };
+      app: {
+        activityReports: ActivityReport[];
+        agents: Agent[];
+        leaves: Leave[];
+      };
     }>
   ) {
     this.activityReport = this.fb.group(
@@ -58,6 +66,7 @@ export class ActivityReportFormComponent implements OnInit {
     );
 
     this.storedAgents$ = this.store.select((state) => state.app.agents);
+    this.storedLeaves$ = this.store.select((state) => state.app.leaves);
     this.storedActivityReport$ = this.store.select(
       (state) => state.app.activityReports
     );
@@ -67,6 +76,14 @@ export class ActivityReportFormComponent implements OnInit {
     if (this.selectedActivityReport) {
       this.activityReport.patchValue(this.selectedActivityReport);
     }
+
+    this.activityReport.valueChanges
+      .pipe(
+        tap(() => {
+          this.errorMessage = null;
+        })
+      )
+      .subscribe();
   }
 
   get project() {
@@ -105,36 +122,78 @@ export class ActivityReportFormComponent implements OnInit {
     return null;
   }
 
+  isValidForm(): boolean {
+    return this.activityReport.valid && !this.errorMessage;
+  }
+
   onSubmit() {
     if (this.activityReport.valid) {
       this.errorMessage = null;
-      if (this.selectedActivityReport) {
-        this.store.dispatch(
-          updateActivityReport({
-            id: this.selectedActivityReport.id,
-            report: this.activityReport.value,
+
+      const startDate = new Date(this.activityReport.get('startDate')?.value);
+      const endDate = new Date(this.activityReport.get('endDate')?.value);
+      const agentId = this.activityReport.get('agentId')?.value;
+
+      this.storedLeaves$
+        .pipe(
+          take(1),
+          tap((leaves) => {
+            if (
+              this.globalService.checkForExistingLeave(
+                startDate,
+                endDate,
+                agentId,
+                leaves
+              )
+            ) {
+              this.errorMessage =
+                'Les dates chevauchent une période de congé existante.';
+              return;
+            }
+
+            this.storedActivityReport$
+              .pipe(
+                take(1),
+                tap((activityReports) => {
+                  if (
+                    this.globalService.checkForOverlappingActivities(
+                      startDate,
+                      endDate,
+                      agentId,
+                      activityReports
+                    )
+                  ) {
+                    this.errorMessage =
+                      'Les dates chevauchent une autre activité existante pour cet agent.';
+                    return;
+                  }
+
+                  if (this.selectedActivityReport) {
+                    this.store.dispatch(
+                      updateActivityReport({
+                        id: this.selectedActivityReport.id,
+                        report: this.activityReport.value,
+                      })
+                    );
+
+                    this.isActivityReportUpdated.emit(true);
+                  } else {
+                    this.activityReport.patchValue({
+                      id: activityReports ? activityReports.length : 0,
+                    });
+                    this.store.dispatch(
+                      addActivityReport({ report: this.activityReport.value })
+                    );
+                    this.activityReport.reset();
+                  }
+
+                  this.formSubmitted = true;
+                })
+              )
+              .subscribe();
           })
-        );
-
-        this.isActivityReportUpdated.emit(true);
-      } else {
-        this.storedActivityReport$
-          .pipe(
-            take(1),
-            tap((activityReport) => {
-              this.activityReport.patchValue({
-                id: activityReport ? activityReport.length : 0,
-              });
-              this.store.dispatch(
-                addActivityReport({ report: this.activityReport.value })
-              );
-              this.activityReport.reset();
-            })
-          )
-          .subscribe();
-      }
-
-      this.formSubmitted = true;
+        )
+        .subscribe();
     } else {
       this.errorMessage = 'Vérifier les champs du formulaire';
     }

@@ -61,8 +61,8 @@
     }
 
     <button
-      [ngClass]="{ disabled: activityReport.invalid }"
-      [disabled]="activityReport.invalid"
+      [ngClass]="{ disabled: !isValidForm() }"
+      [disabled]="!isValidForm()"
       type="submit"
     >
       @if(selectedActivityReport) { Modifier } @else { Ajouter }

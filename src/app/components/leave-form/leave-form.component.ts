@@ -20,6 +20,7 @@ import { Agent } from '../../interfaces/agent';
 import { RouterModule } from '@angular/router';
 import { ToastComponent } from '../toast/toast.component';
 import { ActivityReport } from '../../interfaces/activity-report';
+import { GlobalService } from '../../services/global.service';
 
 @Component({
   selector: 'app-leave-form',
@@ -41,6 +42,7 @@ export class LeaveFormComponent implements OnInit {
   previousLeaveData: Leave | null = null;
 
   constructor(
+    private globalService: GlobalService,
     private fb: FormBuilder,
     private store: Store<{
       app: {
@@ -140,21 +142,6 @@ export class LeaveFormComponent implements OnInit {
     return null;
   }
 
-  checkForOverlappingActivities(
-    startDate: Date,
-    endDate: Date,
-    agentId: number,
-    activityReports: ActivityReport[]
-  ): boolean {
-    return activityReports
-      .filter((activity) => activity.agentId === agentId)
-      .some((activity) => {
-        const activityStart = new Date(activity.startDate);
-        const activityEnd = new Date(activity.endDate);
-        return startDate <= activityEnd && endDate >= activityStart;
-      });
-  }
-
   countWeekdays(startDate: Date, endDate: Date): number {
     let count = 0;
     const currentDate = new Date(startDate);
@@ -189,26 +176,6 @@ export class LeaveFormComponent implements OnInit {
     return this.leave.valid && !this.errorMessage;
   }
 
-  checkForExistingLeave(
-    startDate: Date,
-    endDate: Date,
-    agentId: number,
-    leaves: Leave[],
-    currentLeaveId?: number
-  ): boolean {
-    return leaves
-      .filter(
-        (leave) =>
-          Number(leave.agentId) === Number(agentId) &&
-          Number(leave.id) !== Number(currentLeaveId)
-      )
-      .some((leave) => {
-        const leaveStart = new Date(leave.startDate);
-        const leaveEnd = new Date(leave.endDate);
-        return startDate <= leaveEnd && endDate >= leaveStart;
-      });
-  }
-
   onSubmit() {
     if (this.leave.valid) {
       this.errorMessage = null;
@@ -221,7 +188,7 @@ export class LeaveFormComponent implements OnInit {
           take(1),
           tap((activityReports) => {
             if (
-              this.checkForOverlappingActivities(
+              this.globalService.checkForOverlappingActivities(
                 startDateObj,
                 endDateObj,
                 agentId,
@@ -236,7 +203,7 @@ export class LeaveFormComponent implements OnInit {
           switchMap(() => this.storedLeaves$.pipe(take(1))),
           tap((leaves) => {
             if (
-              this.checkForExistingLeave(
+              this.globalService.checkForExistingLeave(
                 startDateObj,
                 endDateObj,
                 agentId,
