@@ -17,11 +17,12 @@ import {
 } from '../../store/app.actions';
 import { Agent } from '../../interfaces/agent';
 import { RouterModule } from '@angular/router';
+import { ToastComponent } from '../toast/toast.component';
 
 @Component({
   selector: 'app-activity-report-form',
   standalone: true,
-  imports: [ReactiveFormsModule, CommonModule, RouterModule],
+  imports: [ReactiveFormsModule, CommonModule, RouterModule, ToastComponent],
   templateUrl: './activity-report-form.component.html',
   styleUrl: './activity-report-form.component.scss',
 })
@@ -33,6 +34,7 @@ export class ActivityReportFormComponent implements OnInit {
   storedAgents$: Observable<Agent[]>;
   errorMessage: string | null = null;
   storedActivityReport$: Observable<ActivityReport[]>;
+  formSubmitted: boolean = false;
 
   constructor(
     private fb: FormBuilder,
@@ -131,6 +133,8 @@ export class ActivityReportFormComponent implements OnInit {
           )
           .subscribe();
       }
+
+      this.formSubmitted = true;
     } else {
       this.errorMessage = 'Vérifier les champs du formulaire';
     }

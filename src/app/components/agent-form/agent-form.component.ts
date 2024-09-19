@@ -11,11 +11,12 @@ import { addAgent, deleteAgent } from '../../store/app.actions';
 import { CommonModule } from '@angular/common';
 import { take, tap } from 'rxjs';
 import { Agent } from '../../interfaces/agent';
+import { ToastComponent } from '../toast/toast.component';
 
 @Component({
   selector: 'app-agent-form',
   standalone: true,
-  imports: [ReactiveFormsModule, CommonModule],
+  imports: [ReactiveFormsModule, CommonModule, ToastComponent],
   templateUrl: './agent-form.component.html',
   styleUrl: './agent-form.component.scss',
 })
@@ -23,6 +24,7 @@ export class AgentFormComponent {
   agents: FormGroup;
   agentsData$: Observable<Agent[]>;
   errorMessage: string | null;
+  formSubmitted: boolean = false;
 
   constructor(
     private fb: FormBuilder,
@@ -70,6 +72,8 @@ export class AgentFormComponent {
             this.errorMessage = null;
             this.store.dispatch(addAgent({ agentData: this.agents.value }));
             this.agents.reset();
+
+            this.formSubmitted = true;
           } else {
             this.errorMessage = 'Form is invalid';
           }

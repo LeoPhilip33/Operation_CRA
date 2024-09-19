@@ -25,6 +25,7 @@
         display: flex;
         flex-wrap: wrap;
         gap: 1rem;
+        width: clamp(30rem, 50vw, 50rem);
 
         >div {
             display: flex;

@@ -13,11 +13,12 @@ import { Observable, take, tap } from 'rxjs';
 import { CommonModule } from '@angular/common';
 import { Agent } from '../../interfaces/agent';
 import { RouterModule } from '@angular/router';
+import { ToastComponent } from '../toast/toast.component';
 
 @Component({
   selector: 'app-leave-form',
   standalone: true,
-  imports: [ReactiveFormsModule, CommonModule, RouterModule],
+  imports: [ReactiveFormsModule, CommonModule, RouterModule, ToastComponent],
   templateUrl: './leave-form.component.html',
   styleUrl: './leave-form.component.scss',
 })
@@ -29,6 +30,7 @@ export class LeaveFormComponent implements OnInit {
   storedAgents$: Observable<Agent[]>;
   storedLeaves$: Observable<Leave[]>;
   errorMessage: string | null = null;
+  formSubmitted: boolean = false;
 
   constructor(
     private fb: FormBuilder,
@@ -118,6 +120,8 @@ export class LeaveFormComponent implements OnInit {
           )
           .subscribe();
       }
+
+      this.formSubmitted = true;
     } else {
       this.errorMessage = 'Vérifier les champs du formulaire';
     }

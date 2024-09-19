@@ -66,7 +66,6 @@ export class CalendarComponent implements OnInit {
 
   getBorderColor(element: string): string {
     const legend = this.legends.find((l) => l.label === element);
-    console.log(legend);
     return legend ? legend.borderColor : '';
   }
 

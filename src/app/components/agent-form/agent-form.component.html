@@ -44,3 +44,10 @@
   </div>
   }}
 </div>
+
+@if(formSubmitted) {
+<app-toast
+  [toastMessage]="'Agent ajouté avec succès.'"
+  (isToastClosed)="formSubmitted = false"
+></app-toast>
+}

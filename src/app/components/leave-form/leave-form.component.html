@@ -81,3 +81,10 @@
   <button routerLink="/agents">Ajouter un agent</button>
   }}
 </div>
+
+@if(formSubmitted) {
+<app-toast
+  [toastMessage]="'Absence ajoutée avec succès.'"
+  (isToastClosed)="formSubmitted = false"
+></app-toast>
+}
