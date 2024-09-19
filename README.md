@@ -1,27 +1,65 @@
-# OperationCra
+# Opération CRA
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 17.2.3.
+## Contexte
 
-## Development server
+L'application "Opération CRA" a été développée pour Groupama Gan Vie dans le but de gérer les comptes rendus d'activité (CRA) de leurs agents spéciaux. Cette application Angular permet de suivre les efforts des agents sur différents projets, de gérer leurs congés et d'ajouter de nouveaux agents selon les besoins.
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The application will automatically reload if you change any of the source files.
+## Lancer le Projet avec Angular
 
-## Code scaffolding
+Pour lancer le projet en utilisant Angular, suivez ces étapes :
 
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
+1. Clonez le dépôt GitHub :
+   ```bash
+   git clone https://github.com/LeoPhilip33/Operation_CRA.git
+   ```
 
-## Build
+2. Accédez au répertoire du projet :
+   ```bash
+   cd Operation_CRA
+   ```
 
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory.
+ 3. Installez les dépendances :
+   ```bash
+   npm install
+   ```
 
-## Running unit tests
+4. Démarrez le serveur de développement Angular :
+   ```bash
+   ng serve
+   ```
 
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
+5. Accédez à l’application via votre navigateur à l’adresse [http://localhost:4200](http://localhost:4200)
 
-## Running end-to-end tests
+## Déploiement sur Vercel
 
-Run `ng e2e` to execute the end-to-end tests via a platform of your choice. To use this command, you need to first add a package that implements end-to-end testing capabilities.
+L’application “Opération CRA” a été déployée sur Vercel. Vous pouvez y accéder via ce lien : [Opération CRA](https://operation-cra.vercel.app/)
 
-## Further help
+## Dockerisation
 
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI Overview and Command Reference](https://angular.io/cli) page.
+Le projet a également été dockerisé. Voici les étapes pour lancer le projet avec Docker :
+
+1. Assurez-vous d’avoir [Docker](https://www.docker.com/) installé sur votre machine.
+
+2. Accédez au répertoire du projet :
+   ```bash
+   cd Operation_CRA
+   ```
+
+3. Construisez l’image Docker :
+   ```bash
+   docker build -t operation-cra .
+   ```
+
+4. Construisez l’image Docker :
+   ```bash
+   docker run -p 4200:4200 operation-cra
+   ```
+
+5. Accédez à l’application dockérisé via votre navigateur à l’adresse [http://localhost:4200](http://localhost:4200)
+
+## Fonctionnalités Bonus
+En plus des trois agents précréés au lancement de l’application, il est possible d’ajouter plusieurs agents supplémentaires selon les besoins.
+
+Je vous remercie d’avoir pris le temps de considérer ma candidature pour ce poste. Je suis très enthousiaste à l’idée de rejoindre votre équipe et de contribuer à vos projets. Si vous avez besoin d’être convaincu, je serais ravi de vous montrer un autre projet que j’ai réalisé avec Angular en front-end. N’hésitez pas à me contacter pour toute question ou pour organiser une démonstration.
+
+Merci encore pour cette opportunité et au plaisir de collaborer avec vous.
