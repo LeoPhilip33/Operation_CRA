@@ -38,6 +38,7 @@ export class LeaveFormComponent implements OnInit {
   storedActivityReport$: Observable<ActivityReport[]>;
   errorMessage: string | null = null;
   formSubmitted: boolean = false;
+  previousLeaveData: Leave | null = null;
 
   constructor(
     private fb: FormBuilder,
@@ -89,6 +90,7 @@ export class LeaveFormComponent implements OnInit {
   ngOnInit(): void {
     if (this.selectedLeave) {
       this.leave.patchValue(this.selectedLeave);
+      this.previousLeaveData = { ...this.selectedLeave };
     }
 
     this.leave.valueChanges
@@ -173,10 +175,15 @@ export class LeaveFormComponent implements OnInit {
     startDate: Date,
     endDate: Date,
     agentId: number,
-    leaves: Leave[]
+    leaves: Leave[],
+    currentLeaveId?: number
   ): boolean {
     return leaves
-      .filter((leave) => Number(leave.agentId) === Number(agentId))
+      .filter(
+        (leave) =>
+          Number(leave.agentId) === Number(agentId) &&
+          Number(leave.id) !== Number(currentLeaveId)
+      )
       .some((leave) => {
         const leaveStart = new Date(leave.startDate);
         const leaveEnd = new Date(leave.endDate);
@@ -215,7 +222,8 @@ export class LeaveFormComponent implements OnInit {
                 startDateObj,
                 endDateObj,
                 agentId,
-                leaves
+                leaves,
+                this.selectedLeave ? this.selectedLeave.id : undefined
               )
             ) {
               this.errorMessage =
@@ -234,38 +242,97 @@ export class LeaveFormComponent implements OnInit {
             }
 
             const isSickLeave = reason === 'sick';
-            const canTakeLeave =
-              isSickLeave ||
-              this.checkLeaveBalance(agentId, startDateObj, endDateObj, agents);
+            const previousLeaveDays = this.previousLeaveData
+              ? this.countWeekdays(
+                  new Date(this.previousLeaveData.startDate),
+                  new Date(this.previousLeaveData.endDate)
+                )
+              : 0;
 
-            if (!canTakeLeave && !isSickLeave) {
-              this.errorMessage = `Le solde de congés de l'agent est insuffisant pour la période demandée. Congés restants : ${agent.leaveBalance} jours.`;
-              throw new Error(this.errorMessage);
-            }
-
-            const updatedAgents = agents.map((a) => {
-              if (Number(a.id) === Number(agentId)) {
-                if (!isSickLeave) {
+            let updatedAgents = [...agents];
+            if (this.selectedLeave) {
+              if (this.previousLeaveData) {
+                if (this.previousLeaveData.reason !== reason) {
+                  if (this.previousLeaveData.reason !== 'sick' && isSickLeave) {
+                    updatedAgents = agents.map((a) => {
+                      if (Number(a.id) === Number(agentId)) {
+                        return {
+                          ...a,
+                          leaveBalance: a.leaveBalance + previousLeaveDays,
+                        };
+                      }
+                      return a;
+                    });
+                  } else if (
+                    !isSickLeave &&
+                    this.previousLeaveData.reason === 'sick'
+                  ) {
+                    updatedAgents = agents.map((a) => {
+                      if (Number(a.id) === Number(agentId)) {
+                        return {
+                          ...a,
+                          leaveBalance: a.leaveBalance - totalLeaveDays,
+                        };
+                      }
+                      return a;
+                    });
+                  } else if (
+                    !isSickLeave &&
+                    this.previousLeaveData.reason !== 'sick'
+                  ) {
+                    updatedAgents = agents.map((a) => {
+                      if (Number(a.id) === Number(agentId)) {
+                        return {
+                          ...a,
+                          leaveBalance:
+                            a.leaveBalance + previousLeaveDays - totalLeaveDays,
+                        };
+                      }
+                      return a;
+                    });
+                  }
+                } else {
+                  updatedAgents = agents.map((a) => {
+                    if (Number(a.id) === Number(agentId)) {
+                      return {
+                        ...a,
+                        leaveBalance:
+                          a.leaveBalance + previousLeaveDays - totalLeaveDays,
+                      };
+                    }
+                    return a;
+                  });
+                }
+              }
+            } else {
+              if (
+                !isSickLeave &&
+                !this.checkLeaveBalance(
+                  agentId,
+                  startDateObj,
+                  endDateObj,
+                  agents
+                )
+              ) {
+                this.errorMessage = `Le solde de congés de l'agent est insuffisant pour la période demandée. Congés restants : ${agent.leaveBalance} jours.`;
+                throw new Error(this.errorMessage);
+              }
+              updatedAgents = agents.map((a) => {
+                if (Number(a.id) === Number(agentId)) {
                   return {
                     ...a,
                     leaveBalance: a.leaveBalance - totalLeaveDays,
                   };
                 }
                 return a;
-              }
-              return a;
-            });
-
-            const userLeaveBalanceUpdated: Agent | undefined =
-              updatedAgents.find((a) => Number(a.id) === Number(agentId));
-
-            if (!userLeaveBalanceUpdated) {
-              throw new Error('Agent introuvable.');
+              });
             }
 
             this.store.dispatch(
               updateAgent({
-                agentData: userLeaveBalanceUpdated,
+                agentData: updatedAgents.find(
+                  (a) => Number(a.id) === Number(agentId)
+                )!,
               })
             );
 
@@ -273,19 +340,26 @@ export class LeaveFormComponent implements OnInit {
               this.store.dispatch(
                 updateLeave({
                   id: this.selectedLeave.id,
-                  leave: this.leave.value,
+                  leave: {
+                    startDate: this.leave.value.startDate,
+                    endDate: this.leave.value.endDate,
+                    reason: this.leave.value.reason,
+                  },
                 })
               );
               this.isLeaveUpdated.emit(true);
             } else {
-              this.leave.patchValue({ id: 0 });
-              this.store.dispatch(addLeave({ leaveData: this.leave.value }));
-              this.leave.reset();
+              this.store.dispatch(
+                addLeave({
+                  leaveData: this.leave.value,
+                })
+              );
             }
 
             this.formSubmitted = true;
           }),
           catchError((err) => {
+            this.errorMessage = err.message;
             return EMPTY;
           })
         )
