@@ -48,7 +48,7 @@ Le projet a également été dockerisé. Voici les étapes pour lancer le projet
 
 1. Assurez-vous d’avoir [Docker](https://www.docker.com/) installé sur votre machine.
 
-2. Accédez au répertoire du projet :
+2. Accédez au répertoire du projet précédemment cloné :
     ```bash
     cd Operation_CRA
     ```
@@ -60,10 +60,10 @@ Le projet a également été dockerisé. Voici les étapes pour lancer le projet
 
 4. Construisez l’image Docker :
     ```bash
-    docker run -p 4200:4200 operation-cra
+    docker run -d -p 8080:80 operation-cra
     ```
 
-5. Accédez à l’application dockérisé via votre navigateur à l’adresse [http://localhost:4200](http://localhost:4200)
+5. Accédez à l’application dockérisé via votre navigateur à l’adresse [http://localhost:8080](http://localhost:8080)
 
 
 ## Tests End To End
