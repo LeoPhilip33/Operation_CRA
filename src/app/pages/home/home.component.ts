@@ -9,6 +9,7 @@ import { Store } from '@ngrx/store';
 import { Leave } from '../../interfaces/leave';
 import { DialogComponent } from '../../components/dialog/dialog.component';
 import { ActivityReportFormComponent } from '../../components/activity-report-form/activity-report-form.component';
+import { LeaveFormComponent } from '../../components/leave-form/leave-form.component';
 
 @Component({
   selector: 'app-home',
@@ -18,6 +19,7 @@ import { ActivityReportFormComponent } from '../../components/activity-report-fo
     HeaderComponent,
     DialogComponent,
     ActivityReportFormComponent,
+    LeaveFormComponent,
   ],
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.scss'],
@@ -30,6 +32,7 @@ export class HomeComponent implements OnInit {
   leaves: Leave[] = [];
   activityReports: ActivityReport[] = [];
   viewActivity: ActivityReport | null = null;
+  viewLeave: Leave | null = null;
 
   constructor(
     private store: Store<{
@@ -49,19 +52,23 @@ export class HomeComponent implements OnInit {
 
   legends: Legend[] = [
     {
-      backgroundColor: '#CC010F',
-      color: '#fff',
+      backgroundColor: '#ffcfd2',
+      borderColor: '#CC010F',
       label: 'Agent absent',
     },
     {
-      backgroundColor: '#0d0dba',
-      color: '#fff',
+      backgroundColor: '#d2d2ff',
+      borderColor: '#0d0dba',
       label: 'Agent présent',
     },
   ];
 
   computeViewActivity(activityReport: ActivityReport) {
     this.viewActivity = activityReport;
+  }
+
+  computeViewLeave(leave: Leave) {
+    this.viewLeave = leave;
   }
 
   ngOnInit(): void {

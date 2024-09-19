@@ -28,6 +28,7 @@ export class CalendarComponent implements OnInit {
   @Input() leaves: Leave[] = [];
   @Input() activityReports: ActivityReport[] = [];
   @Output() viewActivity = new EventEmitter<ActivityReport>();
+  @Output() viewLeave = new EventEmitter<Leave>();
 
   currentMonth: Date = new Date();
   days: Date[] = [];
@@ -57,6 +58,17 @@ export class CalendarComponent implements OnInit {
     return format(date, 'MMMM yyyy');
   }
 
+  getBackGroundColor(element: string): string {
+    const legend = this.legends.find((l) => l.label === element);
+    return legend ? legend.backgroundColor : '';
+  }
+
+  getBorderColor(element: string): string {
+    const legend = this.legends.find((l) => l.label === element);
+    console.log(legend);
+    return legend ? legend.borderColor : '';
+  }
+
   prevMonth() {
     this.currentMonth = subMonths(this.currentMonth, 1);
     this.loadDays();
@@ -82,6 +94,10 @@ export class CalendarComponent implements OnInit {
 
   viewCra(activity: ActivityReport) {
     this.viewActivity.emit(activity);
+  }
+
+  viewAgentLeave(leave: Leave) {
+    this.viewLeave.emit(leave);
   }
 
   getLeaveForDay(day: Date): Leave[] {

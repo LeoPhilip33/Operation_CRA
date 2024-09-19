@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import {
   AbstractControlOptions,
   FormBuilder,
@@ -8,7 +8,7 @@ import {
 } from '@angular/forms';
 import { Store } from '@ngrx/store';
 import { Leave } from '../../interfaces/leave';
-import { addLeave } from '../../store/agent.actions';
+import { addLeave } from '../../store/app.actions';
 import { Observable } from 'rxjs';
 import { CommonModule } from '@angular/common';
 import { Agent } from '../../interfaces/agent';
@@ -21,7 +21,9 @@ import { RouterModule } from '@angular/router';
   templateUrl: './leave-form.component.html',
   styleUrl: './leave-form.component.scss',
 })
-export class LeaveFormComponent {
+export class LeaveFormComponent implements OnInit {
+  @Input() selectedLeave: Leave | null = null;
+
   leave: FormGroup;
   storedAgents$: Observable<Agent[]>;
   storedLeaves$: Observable<Leave[]>;
@@ -63,6 +65,12 @@ export class LeaveFormComponent {
 
   get reason() {
     return this.leave.get('reason');
+  }
+
+  ngOnInit(): void {
+    if (this.selectedLeave) {
+      this.leave.patchValue(this.selectedLeave);
+    }
   }
 
   isFieldInvalid(field: string): boolean {

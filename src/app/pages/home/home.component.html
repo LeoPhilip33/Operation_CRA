@@ -7,12 +7,13 @@
       [legends]="legends"
       [leaves]="leaves"
       (viewActivity)="computeViewActivity($event)"
+      (viewLeave)="computeViewLeave($event)"
     ></app-calendar>
   </div>
 
-  @if(viewActivity) {
+  @if(viewActivity || viewLeave) {
   <div class="overlay">
-    <div class="container-cra">
+    <div class="container-edit">
       <app-dialog>
         <div>
           <img
@@ -21,11 +22,18 @@
             alt="Fermer la popup"
           />
         </div>
+        @if(viewActivity) {
         <app-activity-report-form
           (isActivityReportUpdated)="viewActivity = null"
           [selectedActivityReport]="viewActivity"
         ></app-activity-report-form
-      ></app-dialog>
+        >} @else {
+        <app-leave-form
+          (isLeaveUpdated)="viewLeave = null"
+          [selectedLeave]="viewLeave"
+        ></app-leave-form>
+        }
+      </app-dialog>
     </div>
   </div>
 

@@ -3,8 +3,9 @@
   @if(storedAgents$ | async; as agents;) { @if(agents.length > 0) {
   <form [formGroup]="activityReport" (ngSubmit)="onSubmit()">
     <select name="agents" formControlName="agentId">
+      @if(!selectedActivityReport) {
       <option [value]="null">-- Sélectionner un agent --</option>
-      @for (agent of storedAgents$ | async; track $index) {
+      } @for (agent of storedAgents$ | async; track $index) {
       <option [value]="agent.id">
         {{ agent.lastName }} {{ agent.firstName }}
       </option>

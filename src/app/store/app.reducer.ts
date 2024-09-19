@@ -4,7 +4,7 @@ import {
   addAgent,
   addLeave,
   updateActivityReport,
-} from './agent.actions';
+} from './app.actions';
 import { Agent } from '../interfaces/agent';
 import { ActivityReport } from '../interfaces/activity-report';
 import { Leave } from '../interfaces/leave';
@@ -16,7 +16,23 @@ export interface AppState {
 }
 
 export const initialState: AppState = {
-  agents: [],
+  agents: [
+    {
+      id: 0,
+      lastName: 'Doe',
+      firstName: 'John',
+    },
+    {
+      id: 1,
+      lastName: 'Philip',
+      firstName: 'Léo',
+    },
+    {
+      id: 2,
+      lastName: 'Dupont',
+      firstName: 'Jean',
+    },
+  ],
   activityReports: [],
   leaves: [],
 };

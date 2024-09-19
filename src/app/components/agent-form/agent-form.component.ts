@@ -7,7 +7,7 @@ import {
 } from '@angular/forms';
 import { Observable } from 'rxjs/internal/Observable';
 import { Store } from '@ngrx/store';
-import { addAgent } from '../../store/agent.actions';
+import { addAgent } from '../../store/app.actions';
 import { CommonModule } from '@angular/common';
 import { take, tap } from 'rxjs';
 import { Agent } from '../../interfaces/agent';

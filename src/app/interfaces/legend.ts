@@ -1,5 +1,5 @@
 export interface Legend {
   backgroundColor: string;
-  color: string;
+  borderColor: string;
   label: string;
 }

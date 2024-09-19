@@ -13,7 +13,7 @@ import { Store } from '@ngrx/store';
 import {
   addActivityReport,
   updateActivityReport,
-} from '../../store/agent.actions';
+} from '../../store/app.actions';
 import { Agent } from '../../interfaces/agent';
 import { RouterModule } from '@angular/router';
 
@@ -40,7 +40,6 @@ export class ActivityReportFormComponent implements OnInit {
     }>
   ) {
     this.errorMessage = null;
-
     this.activityReport = this.fb.group(
       {
         id: [0],

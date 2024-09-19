@@ -17,26 +17,34 @@
     <div class="calendar-day" [ngClass]="{ today: isToday(day) }">
       <div>{{ day ? formatDay(day) : "" }}</div>
       <div class="container-items">
-        @for (activity of getActivityForDay(day); track $index) {
-        <div class="activity-item" (click)="viewCra(activity)">
-          @if(getAgentById(activity.agentId); as agent) {
-          <p class="agent">
-            {{ agent.firstName }} {{ agent.lastName }}
-            {{ activity.project }}
-            {{ activity.activity }}
-          </p>
-          }
-        </div>
-        } @for (leave of getLeaveForDay(day); track $index) {
-        <div class="leave-item">
+        @for (leave of getLeaveForDay(day); track $index) {
+        <div
+          class="item"
+          [ngStyle]="{
+            'background-color': getBackGroundColor('Agent absent'),
+            'border-left': '1px solid ' + getBorderColor('Agent absent')
+          }"
+          (click)="viewAgentLeave(leave)"
+        >
           @if(getAgentById(leave.agentId); as agent) {
-          <p class="item">
-            {{ agent.firstName }} {{ agent.lastName }} (En congé)
-          </p>
-          <div>Raison: {{ leave.reason }}</div>
+          <p>{{ agent.firstName }} {{ agent.lastName }} - En congé</p>
           }
         </div>
-
+        } @for (activity of getActivityForDay(day); track $index) {
+        <div
+          class="item"
+          [ngStyle]="{
+            'background-color': getBackGroundColor('Agent présent'),
+            'border-left': '1px solid ' + getBorderColor('Agent présent')
+          }"
+          (click)="viewCra(activity)"
+        >
+          @if(getAgentById(activity.agentId); as agent) {
+          <p>
+            {{ agent.firstName }} {{ agent.lastName }} - {{ activity.project }}
+          </p>
+          }
+        </div>
         }
       </div>
     </div>
@@ -47,10 +55,7 @@
 @if(legends.length > 0) {
 <div class="legends-container">
   @for (legend of legends; track $index) {
-  <div
-    [style.background-color]="legend.backgroundColor"
-    [style.color]="legend.color"
-  >
+  <div [style.background-color]="legend.backgroundColor">
     {{ legend.label }}
   </div>
   }

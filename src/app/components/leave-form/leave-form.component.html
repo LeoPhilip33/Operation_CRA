@@ -14,7 +14,9 @@
     <p class="error">Un agent est requis.</p>
     }
     <select formControlName="reason" id="leave-type" name="leave-type">
+      @if(!selectedLeave) {
       <option [value]="null">-- Type de congés --</option>
+      }
       <option value="sick">Conges Payés</option>
       <option value="vacation">Maladie</option>
     </select>
@@ -57,7 +59,7 @@
       [disabled]="leave.invalid"
       type="submit"
     >
-      Envoyer
+      @if(selectedLeave) { Modifier } @else { Envoyer }
     </button>
   </form>
   }@else {

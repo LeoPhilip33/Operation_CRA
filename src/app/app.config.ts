@@ -6,7 +6,7 @@ import { provideClientHydration } from '@angular/platform-browser';
 import { provideStore } from '@ngrx/store';
 import { provideEffects } from '@ngrx/effects';
 import { provideStoreDevtools } from '@ngrx/store-devtools';
-import { appReducer } from './store/agent.reducer';
+import { appReducer } from './store/app.reducer';
 
 export const appConfig: ApplicationConfig = {
   providers: [
