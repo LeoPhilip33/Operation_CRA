@@ -7,7 +7,7 @@ import {
   ReactiveFormsModule,
   Validators,
 } from '@angular/forms';
-import { Observable, take, tap } from 'rxjs';
+import { catchError, EMPTY, Observable, switchMap, take, tap } from 'rxjs';
 import { ActivityReport } from '../../interfaces/activity-report';
 import { Store } from '@ngrx/store';
 import {
@@ -133,69 +133,121 @@ export class ActivityReportFormComponent implements OnInit {
       const startDate = new Date(this.activityReport.get('startDate')?.value);
       const endDate = new Date(this.activityReport.get('endDate')?.value);
       const agentId = this.activityReport.get('agentId')?.value;
+      const currentActivityReportId = this.selectedActivityReport?.id;
 
-      this.storedLeaves$
-        .pipe(
-          take(1),
-          tap((leaves) => {
-            if (
-              this.globalService.checkForExistingLeave(
-                startDate,
-                endDate,
-                agentId,
-                leaves
-              )
-            ) {
-              this.errorMessage =
-                'Les dates chevauchent une période de congé existante.';
-              return;
-            }
-
-            this.storedActivityReport$
-              .pipe(
-                take(1),
-                tap((activityReports) => {
-                  if (
-                    this.globalService.checkForOverlappingActivities(
-                      startDate,
-                      endDate,
-                      agentId,
-                      activityReports
-                    )
-                  ) {
-                    this.errorMessage =
-                      'Les dates chevauchent une autre activité existante pour cet agent.';
-                    return;
-                  }
-
-                  if (this.selectedActivityReport) {
-                    this.store.dispatch(
-                      updateActivityReport({
-                        id: this.selectedActivityReport.id,
-                        report: this.activityReport.value,
-                      })
-                    );
-
-                    this.isActivityReportUpdated.emit(true);
-                  } else {
-                    this.activityReport.patchValue({
-                      id: activityReports ? activityReports.length : 0,
-                    });
-                    this.store.dispatch(
-                      addActivityReport({ report: this.activityReport.value })
-                    );
-                    this.activityReport.reset();
-                  }
-
-                  this.formSubmitted = true;
-                })
-              )
-              .subscribe();
-          })
-        )
-        .subscribe();
+      this.validateActivityReport(
+        startDate,
+        endDate,
+        agentId,
+        currentActivityReportId
+      );
     } else {
       this.errorMessage = 'Vérifier les champs du formulaire';
     }
+  }
+
+  validateActivityReport(
+    startDate: Date,
+    endDate: Date,
+    agentId: number,
+    currentActivityReportId?: number
+  ) {
+    this.storedLeaves$
+      .pipe(
+        take(1),
+        tap((leaves) => {
+          this.checkForLeaveConflicts(
+            startDate,
+            endDate,
+            agentId,
+            leaves,
+            currentActivityReportId
+          );
+        }),
+        switchMap(() => this.storedActivityReport$.pipe(take(1))),
+        tap((activityReports) => {
+          this.checkForActivityConflicts(
+            startDate,
+            endDate,
+            agentId,
+            activityReports,
+            currentActivityReportId
+          );
+        }),
+        tap((activityReports) => {
+          this.handleActivityReportSubmission(activityReports);
+        }),
+        catchError((err) => {
+          this.errorMessage = err.message;
+          return EMPTY;
+        })
+      )
+      .subscribe();
+  }
+
+  checkForLeaveConflicts(
+    startDate: Date,
+    endDate: Date,
+    agentId: number,
+    leaves: Leave[],
+    currentActivityReportId?: number
+  ) {
+    if (
+      this.globalService.checkForExistingLeave(
+        startDate,
+        endDate,
+        agentId,
+        leaves,
+        currentActivityReportId
+      )
+    ) {
+      this.errorMessage =
+        'Les dates chevauchent une période de congé existante.';
+      throw new Error(this.errorMessage);
+    }
+  }
+
+  checkForActivityConflicts(
+    startDate: Date,
+    endDate: Date,
+    agentId: number,
+    activityReports: ActivityReport[],
+    currentActivityReportId?: number
+  ) {
+    if (
+      this.globalService.checkForOverlappingActivities(
+        startDate,
+        endDate,
+        agentId,
+        activityReports,
+        currentActivityReportId
+      )
+    ) {
+      this.errorMessage =
+        'Les dates chevauchent une autre activité existante pour cet agent.';
+      throw new Error(this.errorMessage);
+    }
+  }
+
+  handleActivityReportSubmission(activityReports: ActivityReport[]) {
+    if (this.selectedActivityReport) {
+      this.store.dispatch(
+        updateActivityReport({
+          id: this.selectedActivityReport.id,
+          report: this.activityReport.value,
+        })
+      );
+      this.isActivityReportUpdated.emit(true);
+    } else {
+      this.activityReport.patchValue({
+        id: activityReports ? activityReports.length : 0,
+      });
+      this.store.dispatch(
+        addActivityReport({ report: this.activityReport.value })
+      );
+      this.activityReport.reset();
+    }
+
+    this.formSubmitted = true;
   }
 }

@@ -10,10 +10,15 @@ export class GlobalService {
     startDate: Date,
     endDate: Date,
     agentId: number,
-    activityReports: ActivityReport[]
+    activityReports: ActivityReport[],
+    currentActivityReportId?: number
   ): boolean {
     return activityReports
-      .filter((activity) => activity.agentId === agentId)
+      .filter(
+        (activity) =>
+          Number(activity.agentId) === Number(agentId) &&
+          Number(activity.id) !== Number(currentActivityReportId)
+      )
       .some((activity) => {
         const activityStart = new Date(activity.startDate);
         const activityEnd = new Date(activity.endDate);

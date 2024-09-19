@@ -179,179 +179,233 @@ export class LeaveFormComponent implements OnInit {
   onSubmit() {
     if (this.leave.valid) {
       this.errorMessage = null;
+
       const { startDate, endDate, agentId, type } = this.leave.value;
       const startDateObj = new Date(startDate);
       const endDateObj = new Date(endDate);
 
-      this.storedActivityReport$
-        .pipe(
-          take(1),
-          tap((activityReports) => {
-            if (
-              this.globalService.checkForOverlappingActivities(
-                startDateObj,
-                endDateObj,
-                agentId,
-                activityReports
-              )
-            ) {
-              this.errorMessage =
-                "Les dates sélectionnées se chevauchent avec un rapport d'activité existant pour cet agent.";
-              throw new Error(this.errorMessage);
-            }
-          }),
-          switchMap(() => this.storedLeaves$.pipe(take(1))),
-          tap((leaves) => {
-            if (
-              this.globalService.checkForExistingLeave(
-                startDateObj,
-                endDateObj,
-                agentId,
-                leaves,
-                this.selectedLeave ? this.selectedLeave.id : undefined
-              )
-            ) {
-              this.errorMessage =
-                'Les dates sélectionnées se chevauchent avec une absence existante pour cet agent.';
-              throw new Error(this.errorMessage);
-            }
-          }),
-          switchMap(() => this.storedAgents$.pipe(take(1))),
-          tap((agents) => {
-            const totalLeaveDays = this.countWeekdays(startDateObj, endDateObj);
-            const agent = agents.find((a) => Number(a.id) === Number(agentId));
-
-            if (!agent) {
-              this.errorMessage = 'Agent introuvable.';
-              throw new Error(this.errorMessage);
-            }
-
-            const isSickLeave = type === 'sick';
-            const previousLeaveDays = this.previousLeaveData
-              ? this.countWeekdays(
-                  new Date(this.previousLeaveData.startDate),
-                  new Date(this.previousLeaveData.endDate)
-                )
-              : 0;
-
-            let updatedAgents = [...agents];
-            if (this.selectedLeave) {
-              if (this.previousLeaveData) {
-                if (this.previousLeaveData.type !== type) {
-                  if (this.previousLeaveData.type !== 'sick' && isSickLeave) {
-                    updatedAgents = agents.map((a) => {
-                      if (Number(a.id) === Number(agentId)) {
-                        return {
-                          ...a,
-                          leaveBalance: a.leaveBalance + previousLeaveDays,
-                        };
-                      }
-                      return a;
-                    });
-                  } else if (
-                    !isSickLeave &&
-                    this.previousLeaveData.type === 'sick'
-                  ) {
-                    updatedAgents = agents.map((a) => {
-                      if (Number(a.id) === Number(agentId)) {
-                        return {
-                          ...a,
-                          leaveBalance: a.leaveBalance - totalLeaveDays,
-                        };
-                      }
-                      return a;
-                    });
-                  } else if (
-                    !isSickLeave &&
-                    this.previousLeaveData.type !== 'sick'
-                  ) {
-                    updatedAgents = agents.map((a) => {
-                      if (Number(a.id) === Number(agentId)) {
-                        return {
-                          ...a,
-                          leaveBalance:
-                            a.leaveBalance + previousLeaveDays - totalLeaveDays,
-                        };
-                      }
-                      return a;
-                    });
-                  }
-                } else {
-                  updatedAgents = agents.map((a) => {
-                    if (Number(a.id) === Number(agentId)) {
-                      return {
-                        ...a,
-                        leaveBalance:
-                          a.leaveBalance + previousLeaveDays - totalLeaveDays,
-                      };
-                    }
-                    return a;
-                  });
-                }
-              }
-            } else {
-              if (
-                !isSickLeave &&
-                !this.checkLeaveBalance(
-                  agentId,
-                  startDateObj,
-                  endDateObj,
-                  agents
-                )
-              ) {
-                this.errorMessage = `Le solde de congés de l'agent est insuffisant pour la période demandée. Congés restants : ${agent.leaveBalance} jours.`;
-                throw new Error(this.errorMessage);
-              }
-              updatedAgents = agents.map((a) => {
-                if (Number(a.id) === Number(agentId)) {
-                  return {
-                    ...a,
-                    leaveBalance: a.leaveBalance - totalLeaveDays,
-                  };
-                }
-                return a;
-              });
-            }
-
-            this.store.dispatch(
-              updateAgent({
-                agentData: updatedAgents.find(
-                  (a) => Number(a.id) === Number(agentId)
-                )!,
-              })
-            );
-
-            if (this.selectedLeave) {
-              this.store.dispatch(
-                updateLeave({
-                  id: this.selectedLeave.id,
-                  leave: {
-                    startDate: this.leave.value.startDate,
-                    endDate: this.leave.value.endDate,
-                    type: this.leave.value.type,
-                  },
-                })
-              );
-              this.isLeaveUpdated.emit(true);
-            } else {
-              this.store.dispatch(
-                addLeave({
-                  leaveData: this.leave.value,
-                })
-              );
-            }
-
-            this.leave.reset();
-            this.formSubmitted = true;
-          }),
-          catchError((err) => {
-            this.errorMessage = err.message;
-            return EMPTY;
-          })
-        )
-        .subscribe();
+      this.validateLeaveSubmission(agentId, startDateObj, endDateObj, type);
     } else {
       this.errorMessage = 'Vérifier les champs du formulaire';
     }
+  }
+
+  validateLeaveSubmission(
+    agentId: number,
+    startDateObj: Date,
+    endDateObj: Date,
+    type: string
+  ) {
+    this.storedActivityReport$
+      .pipe(
+        take(1),
+        tap((activityReports) => {
+          this.checkForOverlappingActivities(
+            startDateObj,
+            endDateObj,
+            agentId,
+            activityReports
+          );
+        }),
+        switchMap(() => this.storedLeaves$.pipe(take(1))),
+        tap((leaves) => {
+          this.checkForExistingLeave(startDateObj, endDateObj, agentId, leaves);
+        }),
+        switchMap(() => this.storedAgents$.pipe(take(1))),
+        tap((agents) => {
+          this.handleLeaveSubmission(
+            agentId,
+            startDateObj,
+            endDateObj,
+            type,
+            agents
+          );
+        }),
+        catchError((err) => {
+          this.errorMessage = err.message;
+          return EMPTY;
+        })
+      )
+      .subscribe();
+  }
+
+  checkForOverlappingActivities(
+    startDate: Date,
+    endDate: Date,
+    agentId: number,
+    activityReports: ActivityReport[]
+  ) {
+    if (
+      this.globalService.checkForOverlappingActivities(
+        startDate,
+        endDate,
+        agentId,
+        activityReports
+      )
+    ) {
+      this.errorMessage =
+        "Les dates sélectionnées se chevauchent avec un rapport d'activité existant pour cet agent.";
+      throw new Error(this.errorMessage);
+    }
+  }
+
+  checkForExistingLeave(
+    startDate: Date,
+    endDate: Date,
+    agentId: number,
+    leaves: Leave[]
+  ) {
+    if (
+      this.globalService.checkForExistingLeave(
+        startDate,
+        endDate,
+        agentId,
+        leaves,
+        this.selectedLeave ? this.selectedLeave.id : undefined
+      )
+    ) {
+      this.errorMessage =
+        'Les dates sélectionnées se chevauchent avec une absence existante pour cet agent.';
+      throw new Error(this.errorMessage);
+    }
+  }
+
+  handleLeaveSubmission(
+    agentId: number,
+    startDate: Date,
+    endDate: Date,
+    type: string,
+    agents: Agent[]
+  ) {
+    const totalLeaveDays = this.countWeekdays(startDate, endDate);
+    const agent = agents.find((a) => Number(a.id) === Number(agentId));
+
+    if (!agent) {
+      this.errorMessage = 'Agent introuvable.';
+      throw new Error(this.errorMessage);
+    }
+
+    let updatedAgents = [...agents];
+    const previousLeaveDays = this.previousLeaveData
+      ? this.countWeekdays(
+          new Date(this.previousLeaveData.startDate),
+          new Date(this.previousLeaveData.endDate)
+        )
+      : 0;
+
+    if (this.selectedLeave) {
+      updatedAgents = this.updateAgentLeaveBalance(
+        agentId,
+        type,
+        previousLeaveDays,
+        totalLeaveDays,
+        agents
+      );
+    } else {
+      this.handleNewLeave(agentId, startDate, endDate, totalLeaveDays, agents);
+    }
+
+    this.dispatchLeaveUpdates(agentId, updatedAgents, startDate, endDate, type);
+  }
+
+  updateAgentLeaveBalance(
+    agentId: number,
+    type: string,
+    previousLeaveDays: number,
+    totalLeaveDays: number,
+    agents: Agent[]
+  ): Agent[] {
+    let updatedAgents = [...agents];
+
+    updatedAgents = agents.map((a) => {
+      if (Number(a.id) === Number(agentId)) {
+        const isSickLeave = type === 'sick';
+
+        if (this.previousLeaveData?.type !== type) {
+          if (this.previousLeaveData?.type !== 'sick' && isSickLeave) {
+            return { ...a, leaveBalance: a.leaveBalance + previousLeaveDays };
+          } else if (!isSickLeave && this.previousLeaveData?.type === 'sick') {
+            return { ...a, leaveBalance: a.leaveBalance - totalLeaveDays };
+          } else if (!isSickLeave) {
+            return {
+              ...a,
+              leaveBalance: a.leaveBalance + previousLeaveDays - totalLeaveDays,
+            };
+          }
+        } else {
+          return {
+            ...a,
+            leaveBalance: a.leaveBalance + previousLeaveDays - totalLeaveDays,
+          };
+        }
+      }
+      return a;
+    });
+
+    return updatedAgents;
+  }
+
+  handleNewLeave(
+    agentId: number,
+    startDate: Date,
+    endDate: Date,
+    totalLeaveDays: number,
+    agents: Agent[]
+  ) {
+    const agent = agents.find((a) => Number(a.id) === Number(agentId));
+    const isSickLeave = this.leave.value.type === 'sick';
+
+    if (
+      !isSickLeave &&
+      !this.checkLeaveBalance(agentId, startDate, endDate, agents)
+    ) {
+      this.errorMessage = `Le solde de congés de l'agent est insuffisant pour la période demandée. Congés restants : ${
+        agent!.leaveBalance
+      } jours.`;
+      throw new Error(this.errorMessage);
+    }
+
+    this.updateAgentLeave(agentId, totalLeaveDays, agents);
+  }
+
+  updateAgentLeave(agentId: number, totalLeaveDays: number, agents: Agent[]) {
+    agents.forEach((agent) => {
+      if (Number(agent.id) === Number(agentId)) {
+        agent.leaveBalance -= totalLeaveDays;
+      }
+    });
+  }
+
+  dispatchLeaveUpdates(
+    agentId: number,
+    updatedAgents: Agent[],
+    startDate: Date,
+    endDate: Date,
+    type: string
+  ) {
+    this.store.dispatch(
+      updateAgent({
+        agentData: updatedAgents.find((a) => Number(a.id) === Number(agentId))!,
+      })
+    );
+
+    if (this.selectedLeave) {
+      this.store.dispatch(
+        updateLeave({
+          id: this.selectedLeave.id,
+          leave: { startDate, endDate, type },
+        })
+      );
+      this.isLeaveUpdated.emit(true);
+    } else {
+      this.store.dispatch(
+        addLeave({
+          leaveData: this.leave.value,
+        })
+      );
+    }
+
+    this.leave.reset();
+    this.formSubmitted = true;
   }
 }
