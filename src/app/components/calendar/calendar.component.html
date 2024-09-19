@@ -9,9 +9,21 @@
 }
 
 <div class="calendar-controls">
-  <button (click)="prevMonth()">Previous</button>
+  <button
+    (click)="prevMonth()"
+    [attr.disabled]="isPrevMonthDisabled() ? true : null"
+    [ngClass]="{ disabled: isPrevMonthDisabled() }"
+  >
+    Previous
+  </button>
   <span>{{ format(currentMonth) }}</span>
-  <button (click)="nextMonth()">Next</button>
+  <button
+    (click)="nextMonth()"
+    [attr.disabled]="isNextMonthDisabled() ? true : null"
+    [ngClass]="{ disabled: isNextMonthDisabled() }"
+  >
+    Next
+  </button>
 </div>
 
 <div class="calendar">

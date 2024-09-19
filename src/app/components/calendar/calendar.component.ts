@@ -21,7 +21,7 @@ import { AgentStatus } from '../../enum/agentStatus';
   standalone: true,
   imports: [CommonModule],
   templateUrl: './calendar.component.html',
-  styleUrl: './calendar.component.scss',
+  styleUrls: ['./calendar.component.scss'],
 })
 export class CalendarComponent implements OnInit {
   @Input() legends: Legend[] = [];
@@ -36,8 +36,25 @@ export class CalendarComponent implements OnInit {
   weeks: Date[][] = [];
   AgentStatus = AgentStatus;
 
+  private minDate: Date = this.currentMonth;
+  private maxDate: Date = this.currentMonth;
+
   ngOnInit() {
+    this.setNavigationLimits();
     this.loadDays();
+  }
+
+  private setNavigationLimits() {
+    this.minDate = subMonths(this.currentMonth, 1);
+    this.maxDate = addMonths(this.currentMonth, 1);
+  }
+
+  isPrevMonthDisabled(): boolean {
+    return subMonths(this.currentMonth, 1) < this.minDate;
+  }
+
+  isNextMonthDisabled(): boolean {
+    return addMonths(this.currentMonth, 1) > this.maxDate;
   }
 
   loadDays() {
@@ -70,13 +87,19 @@ export class CalendarComponent implements OnInit {
   }
 
   prevMonth() {
-    this.currentMonth = subMonths(this.currentMonth, 1);
-    this.loadDays();
+    const newMonth = subMonths(this.currentMonth, 1);
+    if (newMonth >= this.minDate) {
+      this.currentMonth = newMonth;
+      this.loadDays();
+    }
   }
 
   nextMonth() {
-    this.currentMonth = addMonths(this.currentMonth, 1);
-    this.loadDays();
+    const newMonth = addMonths(this.currentMonth, 1);
+    if (newMonth <= this.maxDate) {
+      this.currentMonth = newMonth;
+      this.loadDays();
+    }
   }
 
   formatDay(date: Date): string {
