@@ -33,6 +33,18 @@ button {
         cursor: not-allowed;
         border: 0.2rem solid grey;
     }
+
+    &.delete {
+        background-color: red;
+        border: 0.2rem solid red;
+
+        &:hover {
+            background-color: white;
+            color: red;
+            transition: 0.3s;
+            border: 0.2rem solid red;
+        }
+    }
 }
 
 input {

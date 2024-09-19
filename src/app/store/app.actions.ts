@@ -39,3 +39,10 @@ export const updateLeave = createAction(
     leave: Partial<Leave>;
   }>()
 );
+
+export const deleteLeave = createAction(
+  '[Form] Delete Leave',
+  props<{
+    id: number;
+  }>()
+);

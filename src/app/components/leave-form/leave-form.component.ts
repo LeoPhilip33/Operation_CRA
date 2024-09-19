@@ -8,7 +8,7 @@ import {
 } from '@angular/forms';
 import { Store } from '@ngrx/store';
 import { Leave } from '../../interfaces/leave';
-import { addLeave, updateLeave } from '../../store/app.actions';
+import { addLeave, deleteLeave, updateLeave } from '../../store/app.actions';
 import { Observable, take, tap } from 'rxjs';
 import { CommonModule } from '@angular/common';
 import { Agent } from '../../interfaces/agent';
@@ -79,6 +79,11 @@ export class LeaveFormComponent implements OnInit {
   isFieldInvalid(field: string): boolean {
     const control = this.leave.get(field);
     return (control?.invalid && (control?.touched || control?.dirty)) ?? false;
+  }
+
+  deleteLeave(leaveId: number) {
+    this.store.dispatch(deleteLeave({ id: leaveId }));
+    this.isLeaveUpdated.emit(true);
   }
 
   dateRangeValidator(formGroup: FormGroup) {

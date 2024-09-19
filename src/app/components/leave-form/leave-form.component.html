@@ -66,6 +66,15 @@
     >
       @if(selectedLeave) { Modifier } @else { Envoyer }
     </button>
+    @if(selectedLeave) {
+    <button
+      (click)="deleteLeave(selectedLeave.id)"
+      class="delete"
+      type="button"
+    >
+      Supprimer
+    </button>
+    }
   </form>
   }@else {
   <p>Vous avez aucun agent, commencez par en créer un.</p>
