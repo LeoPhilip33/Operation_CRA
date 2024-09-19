@@ -40,7 +40,7 @@ Pour lancer le projet en utilisant Angular, suivez ces étapes :
 
 ## Déploiement sur Vercel
 
-L’application “Opération CRA” est déployé automatiquement au push sur main via Vercel. Vous pouvez y accéder via ce lien : [Opération CRA](https://operation-cra.vercel.app/)
+L’application “Opération CRA” est déployé automatiquement au push sur main via Vercel. Vous pouvez y accéder via le lien : [Opération CRA](https://operation-cra.vercel.app/)
 
 ## Dockerisation
 
