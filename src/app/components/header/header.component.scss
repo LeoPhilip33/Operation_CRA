@@ -1,44 +1,46 @@
+@import '../../../_variables';
+
 .header-container {
-    position: fixed;
-    background-color: #CC010F;
+  position: fixed;
+  background-color: $blue;
+  color: white;
+  width: 100%;
+  padding: 0.5rem;
+
+  a {
+    cursor: pointer;
+    padding: 1rem 2rem;
+    text-decoration: none;
+    position: relative;
+    display: inline-block;
     color: white;
-    width: 100%;
-    padding: 0.5rem;
+    transition: color 0.3s ease;
 
-    a {
-        cursor: pointer;
-        padding: 1rem 2rem;
-        text-decoration: none;
-        position: relative;
-        display: inline-block;
-        color: white;
-        transition: color 0.3s ease;
-
-        &::after {
-            content: '';
-            position: absolute;
-            left: 0;
-            bottom: 0;
-            width: 0;
-            height: 2px;
-            background-color: white;
-            transition: width 0.3s ease;
-        }
-
-        &:hover {
-            color: #FFF;
-        }
-
-        &.active {
-            font-weight: bold;
-
-            &::after {
-                width: 100%;
-            }
-        }
-
-        &:hover::after {
-            width: 100%;
-        }
+    &::after {
+      content: '';
+      position: absolute;
+      left: 0;
+      bottom: 0;
+      width: 0;
+      height: 2px;
+      background-color: white;
+      transition: width 0.3s ease;
     }
+
+    &:hover {
+      color: #FFF;
+    }
+
+    &.active {
+      font-weight: bold;
+
+      &::after {
+        width: 100%;
+      }
+    }
+
+    &:hover::after {
+      width: 100%;
+    }
+  }
 }

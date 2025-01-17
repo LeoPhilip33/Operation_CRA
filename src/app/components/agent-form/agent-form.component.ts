@@ -1,24 +1,26 @@
-import { Component } from '@angular/core';
+import { Component, computed } from '@angular/core';
 import {
   FormBuilder,
   FormGroup,
   ReactiveFormsModule,
   Validators,
 } from '@angular/forms';
-import { Observable } from 'rxjs/internal/Observable';
-import { select, Store } from '@ngrx/store';
+import { CommonModule } from '@angular/common';
+import { Agent } from '../../interfaces/agent';
+import { ToastComponent } from '../toast/toast.component';
+import { ActivityReport } from '../../interfaces/activity-report';
+import { Leave } from '../../interfaces/leave';
 import {
   addAgent,
   deleteActivityReport,
   deleteAgent,
   deleteLeave,
-} from '../../store/app.actions';
-import { CommonModule } from '@angular/common';
-import { of, switchMap, take, tap } from 'rxjs';
-import { Agent } from '../../interfaces/agent';
-import { ToastComponent } from '../toast/toast.component';
-import { ActivityReport } from '../../interfaces/activity-report';
-import { Leave } from '../../interfaces/leave';
+} from '../../store/signal-operations';
+import {
+  activityReportsSignal,
+  agentsSignal,
+  leavesSignal,
+} from '../../store/signals';
 
 @Component({
   selector: 'app-agent-form',
@@ -29,22 +31,14 @@ import { Leave } from '../../interfaces/leave';
 })
 export class AgentFormComponent {
   agents: FormGroup;
-  storedAgentsData$: Observable<Agent[]>;
-  storedActivityReports$: Observable<ActivityReport[]>;
-  storedLeaves$: Observable<Leave[]>;
+  storedAgentsData: Agent[];
+  storedActivityReports: ActivityReport[];
+  storedLeaves: Leave[];
   errorMessage: string | null;
   formSubmitted: boolean = false;
+  agentSignal = computed(() => agentsSignal());
 
-  constructor(
-    private fb: FormBuilder,
-    private store: Store<{
-      app: {
-        agents: Agent[];
-        activityReports: ActivityReport[];
-        leaves: Leave[];
-      };
-    }>
-  ) {
+  constructor(private fb: FormBuilder) {
     this.errorMessage = null;
     this.agents = this.fb.group({
       id: [0],
@@ -53,11 +47,9 @@ export class AgentFormComponent {
       leaveBalance: [5],
     });
 
-    this.storedLeaves$ = this.store.select((state) => state.app.leaves);
-    this.storedAgentsData$ = this.store.select((state) => state.app.agents);
-    this.storedActivityReports$ = this.store.select(
-      (state) => state.app.activityReports
-    );
+    this.storedAgentsData = agentsSignal();
+    this.storedActivityReports = activityReportsSignal();
+    this.storedLeaves = leavesSignal();
   }
 
   get lastName() {
@@ -74,56 +66,36 @@ export class AgentFormComponent {
   }
 
   deleteAgent(id: number) {
-    this.store
-      .pipe(
-        select((state) => state.app.activityReports),
-        tap((activityReports) => {
-          const activitiesToDelete = activityReports.filter(
-            (report) => Number(report.agentId) === Number(id)
-          );
-          activitiesToDelete.forEach((activity) =>
-            this.store.dispatch(deleteActivityReport({ id: activity.id }))
-          );
-        }),
-        switchMap(() => this.store.pipe(select((state) => state.app.leaves))),
-        tap((leaves) => {
-          const leavesToDelete = leaves.filter(
-            (leave) => Number(leave.agentId) === Number(id)
-          );
-          leavesToDelete.forEach((leave) =>
-            this.store.dispatch(deleteLeave({ id: leave.id }))
-          );
-        }),
-        switchMap(() => {
-          this.store.dispatch(deleteAgent({ id }));
-          return of(null);
-        })
-      )
-      .subscribe();
+    const activitiesToDelete = this.storedActivityReports.filter(
+      (report) => Number(report.agentId) === Number(id)
+    );
+    activitiesToDelete.forEach((activity) => deleteActivityReport(activity.id));
+
+    const leavesToDelete = this.storedLeaves.filter(
+      (leave) => Number(leave.agentId) === Number(id)
+    );
+    leavesToDelete.forEach((leave) => deleteLeave(leave.id));
+
+    deleteAgent(id);
   }
 
   onSubmit() {
-    this.storedAgentsData$
-      .pipe(
-        take(1),
-        tap((agents) => {
-          this.agents.patchValue({
-            id: agents ? agents.length : 0,
-          });
+    const storedAgents = this.storedAgentsData;
 
-          if (this.agents.valid) {
-            this.errorMessage = null;
-            this.store.dispatch(addAgent({ agentData: this.agents.value }));
-            this.agents.reset({
-              leaveBalance: 5,
-            });
+    this.agents.patchValue({
+      id: storedAgents ? storedAgents.length : 0,
+    });
 
-            this.formSubmitted = true;
-          } else {
-            this.errorMessage = 'Form is invalid';
-          }
-        })
-      )
-      .subscribe();
+    if (this.agents.valid) {
+      this.errorMessage = null;
+      addAgent(this.agents.value);
+      this.agents.reset({
+        leaveBalance: 5,
+      });
+
+      this.formSubmitted = true;
+    } else {
+      this.errorMessage = 'Form is invalid';
+    }
   }
 }

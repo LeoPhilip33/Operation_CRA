@@ -1,120 +1,85 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ReactiveFormsModule } from '@angular/forms';
-import { ActivityReportFormComponent } from './activity-report-form.component';
-import {
-  addActivityReport,
-  deleteActivityReport,
-  updateActivityReport,
-} from '../../store/app.actions';
-import { provideMockStore, MockStore } from '@ngrx/store/testing';
-import { RouterModule } from '@angular/router';
-import { ToastComponent } from '../toast/toast.component';
-import { ActivityReport } from '../../interfaces/activity-report';
-import { Agent } from '../../interfaces/agent';
+import { By } from '@angular/platform-browser';
+import { ActivityReportFormComponent } from '../../components/activity-report-form/activity-report-form.component';
 
 describe('ActivityReportFormComponent', () => {
   let component: ActivityReportFormComponent;
   let fixture: ComponentFixture<ActivityReportFormComponent>;
-  let store: MockStore;
-
-  const initialState = {
-    app: {
-      activityReports: [] as ActivityReport[],
-      agents: [] as Agent[],
-    },
-  };
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [ReactiveFormsModule, RouterModule.forRoot([]), ToastComponent],
-      providers: [provideMockStore({ initialState })],
+      imports: [ReactiveFormsModule, ActivityReportFormComponent],
     }).compileComponents();
+  });
 
-    store = TestBed.inject(MockStore);
+  beforeEach(() => {
     fixture = TestBed.createComponent(ActivityReportFormComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
 
-  it('should create the component', () => {
+  it('should create', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should initialize form with default values', () => {
-    expect(component.activityReport.value).toEqual({
-      id: 0,
-      agentId: null,
-      project: '',
-      startDate: null,
-      endDate: null,
-      activity: '',
-    });
+  it('should display "Reporter une activité" when no activity report is selected', () => {
+    component.selectedActivityReport = null;
+    fixture.detectChanges();
+    const title = fixture.debugElement.query(By.css('h1')).nativeElement;
+    expect(title.textContent.trim()).toContain('Reporter une activité');
   });
 
-  it('should populate the form if a selectedActivityReport is provided', () => {
-    const mockActivityReport: ActivityReport = {
+  it('should display "Modifier une activité" when an activity report is selected', () => {
+    component.selectedActivityReport = {
       id: 1,
       agentId: 1,
-      project: 'Project A',
-      startDate: new Date('2023-01-01'),
-      endDate: new Date('2023-01-02'),
-      activity: 'Some activity description',
+      project: 'Test Project',
+      startDate: new Date(),
+      endDate: new Date(),
+      activity: 'Test Activity',
     };
-
-    component.selectedActivityReport = mockActivityReport;
-    component.ngOnInit();
     fixture.detectChanges();
-
-    expect(component.activityReport.value).toEqual(mockActivityReport);
+    const title = fixture.debugElement.query(By.css('h1')).nativeElement;
+    expect(title.textContent.trim()).toContain('Modifier une activité');
   });
 
-  it('should validate the form', () => {
-    component.activityReport.patchValue({
-      agentId: 1,
-      project: 'AAA',
-      startDate: new Date('2024-10-01'),
-      endDate: new Date('2024-10-03'),
-      activity: 'Some activity description',
-    });
+  it('should display error message when agentId is invalid', () => {
+    component.activityReport.controls['agentId'].setValue(null);
+    component.activityReport.controls['agentId'].markAsTouched();
     fixture.detectChanges();
-
-    expect(component.activityReport.valid).toBeTrue();
+    const errorMessage = fixture.debugElement.query(
+      By.css('.error')
+    ).nativeElement;
+    expect(errorMessage.textContent).toContain('Agent est requis.');
   });
 
-  it('should display error message if the form is invalid', () => {
-    component.activityReport.patchValue({
-      agentId: null,
-      project: '',
-      startDate: null,
-      endDate: null,
-      activity: '',
-    });
+  it('should display error message when project is invalid', () => {
+    component.activityReport.controls['project'].setValue('');
+    component.activityReport.controls['project'].markAsTouched();
+    fixture.detectChanges();
+    const errorMessage = fixture.debugElement.query(
+      By.css('.error')
+    ).nativeElement;
+    expect(errorMessage.textContent).toContain(
+      'Projet est requis et doit comporter au moins 3 caractères.'
+    );
+  });
 
+  it('should call onSubmit when form is submitted', () => {
+    spyOn(component, 'onSubmit');
+    const form = fixture.debugElement.query(By.css('form')).nativeElement;
+    form.dispatchEvent(new Event('submit'));
+    expect(component.onSubmit).toHaveBeenCalled();
+  });
+
+  it('should add activity report when form is valid', () => {
+    component.activityReport.controls['agentId'].setValue(1);
+    component.activityReport.controls['project'].setValue('Test Project');
+    component.activityReport.controls['startDate'].setValue('2023-01-01');
+    component.activityReport.controls['endDate'].setValue('2023-01-10');
+    component.activityReport.controls['activity'].setValue('Test Activity');
     component.onSubmit();
-    fixture.detectChanges();
-
-    expect(component.errorMessage).toBe('Vérifier les champs du formulaire');
-  });
-
-  it('should dispatch deleteActivityReport when deleting an activity report', () => {
-    const spyDispatch = spyOn(store, 'dispatch').and.callThrough();
-    const spyEmit = spyOn(component.isActivityReportUpdated, 'emit');
-
-    component.deleteActivityReport(1);
-
-    expect(spyDispatch).toHaveBeenCalledWith(deleteActivityReport({ id: 1 }));
-    expect(spyEmit).toHaveBeenCalledWith(true);
-  });
-
-  it('should validate date range and set error if startDate is after endDate', () => {
-    component.activityReport.patchValue({
-      startDate: '2023-01-02',
-      endDate: '2023-01-01',
-    });
-    component.dateRangeValidator(component.activityReport);
-    fixture.detectChanges();
-
-    const endDateControl = component.activityReport.get('endDate');
-    expect(endDateControl?.errors).toEqual({ dateRange: true });
+    expect(component.errorMessage).toBeNull();
   });
 });

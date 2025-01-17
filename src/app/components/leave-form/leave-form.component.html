@@ -1,6 +1,6 @@
 <div class="form-container">
   <h1>@if(!selectedLeave) { Poser } @else { Modifier } une absence</h1>
-  @if(storedAgents$ | async; as agents) { @if(agents.length > 0) {
+  @if(agents.length > 0) {
   <form [formGroup]="leave" (ngSubmit)="onSubmit()">
     @if(!selectedLeave) {
     <select name="agents" formControlName="agentId">
@@ -93,7 +93,7 @@
   }@else {
   <p>Vous avez aucun agent, commencez par en créer un.</p>
   <button routerLink="/agents">Ajouter un agent</button>
-  }}
+  }
 </div>
 
 @if(formSubmitted) {

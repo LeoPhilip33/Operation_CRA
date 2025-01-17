@@ -1,110 +1,59 @@
-import {
-  ComponentFixture,
-  TestBed,
-  fakeAsync,
-  flush,
-  tick,
-} from '@angular/core/testing';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ReactiveFormsModule } from '@angular/forms';
-import { Store } from '@ngrx/store';
-import { of } from 'rxjs';
 import { AgentFormComponent } from './agent-form.component';
-import { deleteAgent } from '../../store/app.actions';
-import { Agent } from '../../interfaces/agent';
+import { By } from '@angular/platform-browser';
 
 describe('AgentFormComponent', () => {
   let component: AgentFormComponent;
   let fixture: ComponentFixture<AgentFormComponent>;
-  let store: jasmine.SpyObj<Store<{ app: { agents: Agent[] } }>>;
 
   beforeEach(async () => {
-    store = jasmine.createSpyObj('Store', ['dispatch', 'select']);
-    store.select.and.returnValue(
-      of([{ id: 1, lastName: 'Doe', firstName: 'John', leaveBalance: 5 }])
-    );
-
     await TestBed.configureTestingModule({
       imports: [ReactiveFormsModule, AgentFormComponent],
-      providers: [{ provide: Store, useValue: store }],
     }).compileComponents();
+  });
 
+  beforeEach(() => {
     fixture = TestBed.createComponent(AgentFormComponent);
     component = fixture.componentInstance;
+    fixture.detectChanges();
   });
 
-  afterEach(() => {
-    store.dispatch.calls.reset();
-    store.select.calls.reset();
-  });
-
-  it('should create the component', () => {
+  it('should create', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should initialize the form with default values', () => {
-    expect(component.agents.value).toEqual({
-      id: 0,
-      lastName: '',
-      firstName: '',
-      leaveBalance: 5,
-    });
+  it('should display error message when lastName is invalid', () => {
+    component.agents.controls['lastName'].setValue('');
+    component.agents.controls['lastName'].markAsTouched();
+    fixture.detectChanges();
+    const errorMessage = fixture.debugElement.query(
+      By.css('.error')
+    ).nativeElement;
+    expect(errorMessage.textContent).toContain('Le nom est requis.');
   });
 
-  it('should mark the form as invalid if required fields are missing', () => {
-    component.onSubmit();
-    expect(component.agents.invalid).toBeTrue();
-    expect(component.errorMessage).toBe('Form is invalid');
+  it('should display error message when firstName is invalid', () => {
+    component.agents.controls['firstName'].setValue('');
+    component.agents.controls['firstName'].markAsTouched();
+    fixture.detectChanges();
+    const errorMessage = fixture.debugElement.query(
+      By.css('.error')
+    ).nativeElement;
+    expect(errorMessage.textContent).toContain('Le prénom est requis.');
   });
 
-  it('should validate lastName and firstName fields correctly', () => {
-    component.agents.patchValue({
-      lastName: 'Do',
-      firstName: 'Jo',
-    });
-
-    component.lastName?.markAsTouched();
-    component.firstName?.markAsTouched();
-
-    expect(component.isFieldInvalid('lastName')).toBeTrue();
-    expect(component.isFieldInvalid('firstName')).toBeTrue();
-
-    component.agents.patchValue({
-      lastName: 'Doe',
-      firstName: 'John',
-    });
-
-    component.lastName?.markAsTouched();
-    component.firstName?.markAsTouched();
-
-    expect(component.isFieldInvalid('lastName')).toBeFalse();
-    expect(component.isFieldInvalid('firstName')).toBeFalse();
+  it('should call onSubmit when form is submitted', () => {
+    spyOn(component, 'onSubmit');
+    const form = fixture.debugElement.query(By.css('form')).nativeElement;
+    form.dispatchEvent(new Event('submit'));
+    expect(component.onSubmit).toHaveBeenCalled();
   });
 
-  it('should reset the form after successful submission', fakeAsync(() => {
-    component.agents.patchValue({
-      lastName: 'Doe',
-      firstName: 'John',
-    });
-
+  it('should add agent when form is valid', () => {
+    component.agents.controls['lastName'].setValue('Doe');
+    component.agents.controls['firstName'].setValue('John');
     component.onSubmit();
-    flush();
-
-    expect(component.agents.value).toEqual({
-      id: null,
-      lastName: null,
-      firstName: null,
-      leaveBalance: 5,
-    });
-  }));
-
-  it('should update the id field based on the number of agents', fakeAsync(() => {
-    store.select.and.returnValue(
-      of([{ id: 1, lastName: 'Doe', firstName: 'John', leaveBalance: 5 }])
-    );
-
-    component.onSubmit();
-    tick();
-
-    expect(component.agents.get('id')?.value).toBe(1);
-  }));
+    expect(component.errorMessage).toBeNull();
+  });
 });

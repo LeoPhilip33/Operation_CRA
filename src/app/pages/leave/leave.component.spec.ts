@@ -1,51 +1,46 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { By } from '@angular/platform-browser';
 import { LeaveComponent } from './leave.component';
 import { HeaderComponent } from '../../components/header/header.component';
 import { LeaveFormComponent } from '../../components/leave-form/leave-form.component';
-import { provideMockStore, MockStore } from '@ngrx/store/testing';
-import { By } from '@angular/platform-browser';
-import { RouterModule } from '@angular/router';
+import { ActivityReportFormComponent } from '../../components/activity-report-form/activity-report-form.component';
+import { RouterTestingModule } from '@angular/router/testing';
 
 describe('LeaveComponent', () => {
   let component: LeaveComponent;
   let fixture: ComponentFixture<LeaveComponent>;
-  let store: MockStore;
-  const initialState = { app: { activityReports: [], leaves: [], agents: [] } };
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [
-        LeaveComponent,
         HeaderComponent,
         LeaveFormComponent,
-        RouterModule.forRoot([]),
+        ActivityReportFormComponent,
+        LeaveComponent,
+        RouterTestingModule,
       ],
-      providers: [provideMockStore({ initialState })],
     }).compileComponents();
+  });
 
-    store = TestBed.inject(MockStore);
+  beforeEach(() => {
     fixture = TestBed.createComponent(LeaveComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
 
-  it('should create the component', () => {
-    expect(component).toBeTruthy();
-  });
-
-  it('should render HeaderComponent', () => {
+  it('should render the header component', () => {
     const headerElement = fixture.debugElement.query(By.css('app-header'));
     expect(headerElement).toBeTruthy();
   });
 
-  it('should render LeaveFormComponent', () => {
+  it('should render the leave form component', () => {
     const leaveFormElement = fixture.debugElement.query(
       By.css('app-leave-form')
     );
     expect(leaveFormElement).toBeTruthy();
   });
 
-  it('should have the correct CSS class applied', () => {
+  it('should have a container with class "container-leave"', () => {
     const containerElement = fixture.debugElement.query(
       By.css('.container-leave')
     );

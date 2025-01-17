@@ -31,18 +31,18 @@
     </button>
   </form>
 
-  @if(storedAgentsData$ | async; as agents) { @if(agents.length > 0) {
+  @if(agentSignal().length > 0) {
 
   <h3>Agents:</h3>
   <div class="agents-container">
-    @for (agent of agents; track $index) {
+    @for (agent of agentSignal(); track $index) {
     <div>
       <p>{{ agent.lastName }} {{ agent.firstName }}</p>
       <img src="assets/cross.svg" (click)="deleteAgent(agent.id)" />
     </div>
     }
   </div>
-  }}
+  }
 </div>
 
 @if(formSubmitted) {

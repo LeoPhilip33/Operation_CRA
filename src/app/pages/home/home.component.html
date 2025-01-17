@@ -1,11 +1,49 @@
 <div class="container-component">
   <app-header></app-header>
   <div class="container-page">
+    <div>
+      <h1>Vue liste</h1>
+      <div class="list-container">
+        <div>
+          <h2>Agents</h2>
+          @for (agent of agents(); track $index) {
+          <a href="/agents">
+            <p>{{ agent.firstName }} {{ agent.lastName }}</p>
+          </a>
+          }
+        </div>
+        <div>
+          <h2>Rapport d'activitée</h2>
+          @for (report of activityReports(); track $index) {
+          <p (click)="computeViewActivity(report)">
+            {{ getAgentById(report.agentId)?.firstName }}
+            {{ getAgentById(report.agentId)?.lastName }} -
+            {{ report.project }} ({{ report.startDate | date : "dd-MM-yyyy" }} -
+            {{ report.endDate | date : "dd-MM-yyyy" }})
+          </p>
+          }
+        </div>
+
+        <h2>Absences</h2>
+        <div>
+          @for (leave of leaves(); track $index) {
+          <p></p>
+          <p (click)="computeViewLeave(leave)">
+            {{ getAgentById(leave.agentId)?.firstName }}
+            {{ getAgentById(leave.agentId)?.lastName }} - {{ leave.type }} ({{
+              leave.startDate | date : "dd-MM-yyyy"
+            }}
+            - {{ leave.endDate | date : "dd-MM-yyyy" }})
+          </p>
+          }
+        </div>
+      </div>
+    </div>
     <app-calendar
-      [agents]="agents"
-      [activityReports]="activityReports"
+      [agents]="agents()"
+      [activityReports]="activityReports()"
       [legends]="legends"
-      [leaves]="leaves"
+      [leaves]="leaves()"
       (viewActivity)="computeViewActivity($event)"
       (viewLeave)="computeViewLeave($event)"
     ></app-calendar>

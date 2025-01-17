@@ -1,29 +1,103 @@
+@import '../../../_variables';
+
 .container-component {
-    position: relative;
+  position: relative;
 
-    .container-page {
-        padding-top: 5rem;
-        padding-left: 2rem;
-        padding-right: 2rem;
-        width: auto;
+  .container-page {
+    display: flex;
+    gap: 2rem;
+    padding-top: 5rem;
+    padding-left: 2rem;
+    padding-right: 2rem;
+    width: auto;
 
-        app-calendar {
+    app-calendar {
+      width: 100%;
+    }
+
+    .list-container {
+      >div {
+        &:first-child {
+          p {
+            border-left: 0.2rem solid $black;
+            color: $black;
+
+            &::before {
+              background-color: $black;
+            }
+          }
+        }
+
+        &:nth-child(2) {
+          p {
+            border-left: 0.2rem solid #0d0dba;
+
+            &::before {
+              background-color: #0d0dba;
+            }
+          }
+        }
+
+        &:last-child {
+          p {
+            border-left: 0.2rem solid #c96c6c;
+
+            &::before {
+              background-color: #c96c6c;
+            }
+          }
+        }
+
+        a {
+          text-decoration: none;
+        }
+
+        p {
+          cursor: pointer;
+          position: relative;
+          padding-left: 1rem;
+          overflow: hidden;
+          margin: 0;
+          padding: 0.5rem 1rem;
+          transition: color 0.3s ease;
+
+          &::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
             width: 100%;
-        }
-    }
+            height: 100%;
+            z-index: -1;
+            transform: scaleX(0);
+            transform-origin: left;
+            transition: transform 0.3s ease;
+          }
 
-    .container-edit {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        height: 100vh;
-        width: 100%;
+          &:hover {
+            color: $white;
 
-        img {
-            cursor: pointer;
-            display: block;
-            margin-left: auto;
-            width: 2rem;
+            &::before {
+              transform: scaleX(1);
+            }
+          }
         }
+      }
     }
+  }
+
+  .container-edit {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    width: 100%;
+
+    img {
+      cursor: pointer;
+      display: block;
+      margin-left: auto;
+      width: 2rem;
+    }
+  }
 }

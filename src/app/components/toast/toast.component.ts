@@ -1,6 +1,5 @@
 import { CommonModule } from '@angular/common';
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { onIdentifyEffectsKey } from '@ngrx/effects/src/lifecycle_hooks';
 
 @Component({
   selector: 'app-toast',

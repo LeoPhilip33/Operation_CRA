@@ -1,16 +1,20 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, computed } from '@angular/core';
 import { CalendarComponent } from '../../components/calendar/calendar.component';
 import { HeaderComponent } from '../../components/header/header.component';
 import { Legend } from '../../interfaces/legend';
-import { Observable, tap } from 'rxjs';
 import { Agent } from '../../interfaces/agent';
 import { ActivityReport } from '../../interfaces/activity-report';
-import { Store } from '@ngrx/store';
 import { Leave } from '../../interfaces/leave';
 import { DialogComponent } from '../../components/dialog/dialog.component';
 import { ActivityReportFormComponent } from '../../components/activity-report-form/activity-report-form.component';
 import { LeaveFormComponent } from '../../components/leave-form/leave-form.component';
 import { AgentStatus } from '../../enum/agentStatus';
+import {
+  activityReportsSignal,
+  agentsSignal,
+  leavesSignal,
+} from '../../store/signals';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-home',
@@ -21,40 +25,22 @@ import { AgentStatus } from '../../enum/agentStatus';
     DialogComponent,
     ActivityReportFormComponent,
     LeaveFormComponent,
+    CommonModule,
   ],
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.scss'],
 })
-export class HomeComponent implements OnInit {
-  storedAgents$: Observable<Agent[]>;
-  storedActivityReport$: Observable<ActivityReport[]>;
-  storedLeaves$: Observable<Leave[]>;
-  agents: Agent[] = [];
-  leaves: Leave[] = [];
-  activityReports: ActivityReport[] = [];
+export class HomeComponent {
+  agents = computed(() => agentsSignal());
+  leaves = computed(() => leavesSignal());
+  activityReports = computed(() => activityReportsSignal());
   viewActivity: ActivityReport | null = null;
   viewLeave: Leave | null = null;
 
-  constructor(
-    private store: Store<{
-      app: {
-        activityReports: ActivityReport[];
-        agents: Agent[];
-        leaves: Leave[];
-      };
-    }>
-  ) {
-    this.storedAgents$ = this.store.select((state) => state.app.agents);
-    this.storedActivityReport$ = this.store.select(
-      (state) => state.app.activityReports
-    );
-    this.storedLeaves$ = this.store.select((state) => state.app.leaves);
-  }
-
   legends: Legend[] = [
     {
-      backgroundColor: '#ffcfd2',
-      borderColor: '#CC010F',
+      backgroundColor: '#FFC0CB',
+      borderColor: '#5f0000',
       label: AgentStatus.AGENT_ABSENT,
     },
     {
@@ -72,17 +58,7 @@ export class HomeComponent implements OnInit {
     this.viewLeave = leave;
   }
 
-  ngOnInit(): void {
-    this.storedActivityReport$
-      .pipe(tap((activityReports) => (this.activityReports = activityReports)))
-      .subscribe();
-
-    this.storedAgents$
-      .pipe(tap((agents) => (this.agents = agents)))
-      .subscribe();
-
-    this.storedLeaves$
-      .pipe(tap((leaves) => (this.leaves = leaves)))
-      .subscribe();
+  getAgentById(agentId: number): Agent | undefined {
+    return this.agents().find((agent) => agent.id === agentId);
   }
 }

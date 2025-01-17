@@ -1,13 +1,3 @@
-@if(legends.length > 0 && (activityReports.length > 0 || leaves.length > 0)) {
-<div class="legends-container">
-  @for (legend of legends; track $index) {
-  <div [style.background-color]="legend.backgroundColor">
-    {{ legend.label }}
-  </div>
-  }
-</div>
-}
-
 <div class="calendar-controls">
   <button
     (click)="prevMonth()"

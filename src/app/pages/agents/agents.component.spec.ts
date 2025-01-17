@@ -58,7 +58,7 @@ describe('AgentsComponent', () => {
     const containerElement = fixture.debugElement.query(
       By.css('.container-agents')
     );
-    const agentFormElement = containerElement?.query(
+    const agentFormElement = containerElement.query(
       By.directive(AgentFormComponent)
     );
     expect(agentFormElement).toBeTruthy();

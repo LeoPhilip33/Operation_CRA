@@ -7,19 +7,23 @@ import {
   ReactiveFormsModule,
   Validators,
 } from '@angular/forms';
-import { catchError, EMPTY, Observable, switchMap, take, tap } from 'rxjs';
+import { tap } from 'rxjs';
 import { ActivityReport } from '../../interfaces/activity-report';
-import { Store } from '@ngrx/store';
-import {
-  addActivityReport,
-  deleteActivityReport,
-  updateActivityReport,
-} from '../../store/app.actions';
-import { Agent } from '../../interfaces/agent';
 import { RouterModule } from '@angular/router';
 import { ToastComponent } from '../toast/toast.component';
 import { Leave } from '../../interfaces/leave';
 import { GlobalService } from '../../services/global.service';
+import {
+  activityReportsSignal,
+  agentsSignal,
+  leavesSignal,
+} from '../../store/signals';
+import {
+  addActivityReport,
+  deleteActivityReport,
+  updateActivityReport,
+} from '../../store/signal-operations';
+import { formatDateToISO } from '../../utils/date.util';
 
 @Component({
   selector: 'app-activity-report-form',
@@ -33,23 +37,13 @@ export class ActivityReportFormComponent implements OnInit {
   @Output() isActivityReportUpdated = new EventEmitter<boolean>(false);
 
   activityReport: FormGroup;
-  storedAgents$: Observable<Agent[]>;
-  storedLeaves$: Observable<Leave[]>;
+  storedLeaves: Leave[] = leavesSignal();
+  storedActivityReport: ActivityReport[] = activityReportsSignal();
   errorMessage: string | null = null;
-  storedActivityReport$: Observable<ActivityReport[]>;
   formSubmitted: boolean = false;
+  agents = agentsSignal();
 
-  constructor(
-    private fb: FormBuilder,
-    private globalService: GlobalService,
-    private store: Store<{
-      app: {
-        activityReports: ActivityReport[];
-        agents: Agent[];
-        leaves: Leave[];
-      };
-    }>
-  ) {
+  constructor(private fb: FormBuilder, private globalService: GlobalService) {
     this.activityReport = this.fb.group(
       {
         id: [0],
@@ -64,17 +58,19 @@ export class ActivityReportFormComponent implements OnInit {
           .dateRangeValidator as AbstractControlOptions['validators'],
       } as AbstractControlOptions
     );
-
-    this.storedAgents$ = this.store.select((state) => state.app.agents);
-    this.storedLeaves$ = this.store.select((state) => state.app.leaves);
-    this.storedActivityReport$ = this.store.select(
-      (state) => state.app.activityReports
-    );
   }
 
   ngOnInit(): void {
     if (this.selectedActivityReport) {
-      this.activityReport.patchValue(this.selectedActivityReport);
+      const reportWithDates = {
+        ...this.selectedActivityReport,
+        startDate: formatDateToISO(
+          new Date(this.selectedActivityReport.startDate)
+        ),
+        endDate: formatDateToISO(new Date(this.selectedActivityReport.endDate)),
+      };
+
+      this.activityReport.patchValue(reportWithDates);
     }
 
     this.activityReport.valueChanges
@@ -108,7 +104,7 @@ export class ActivityReportFormComponent implements OnInit {
   }
 
   deleteActivityReport(activityReportId: number) {
-    this.store.dispatch(deleteActivityReport({ id: activityReportId }));
+    deleteActivityReport(activityReportId);
     this.isActivityReportUpdated.emit(true);
   }
 
@@ -152,37 +148,22 @@ export class ActivityReportFormComponent implements OnInit {
     agentId: number,
     currentActivityReportId?: number
   ) {
-    this.storedLeaves$
-      .pipe(
-        take(1),
-        tap((leaves) => {
-          this.checkForLeaveConflicts(
-            startDate,
-            endDate,
-            agentId,
-            leaves,
-            currentActivityReportId
-          );
-        }),
-        switchMap(() => this.storedActivityReport$.pipe(take(1))),
-        tap((activityReports) => {
-          this.checkForActivityConflicts(
-            startDate,
-            endDate,
-            agentId,
-            activityReports,
-            currentActivityReportId
-          );
-        }),
-        tap((activityReports) => {
-          this.handleActivityReportSubmission(activityReports);
-        }),
-        catchError((err) => {
-          this.errorMessage = err.message;
-          return EMPTY;
-        })
-      )
-      .subscribe();
+    this.checkForLeaveConflicts(
+      startDate,
+      endDate,
+      agentId,
+      this.storedLeaves,
+      currentActivityReportId
+    );
+
+    this.checkForActivityConflicts(
+      startDate,
+      endDate,
+      agentId,
+      this.storedActivityReport,
+      currentActivityReportId
+    );
+    this.handleActivityReportSubmission(this.storedActivityReport);
   }
 
   checkForLeaveConflicts(
@@ -225,26 +206,19 @@ export class ActivityReportFormComponent implements OnInit {
     ) {
       this.errorMessage =
         'Les dates chevauchent une autre activité existante pour cet agent.';
-      throw new Error(this.errorMessage);
     }
   }
 
   handleActivityReportSubmission(activityReports: ActivityReport[]) {
     if (this.selectedActivityReport) {
-      this.store.dispatch(
-        updateActivityReport({
-          id: this.selectedActivityReport.id,
-          report: this.activityReport.value,
-        })
-      );
+      updateActivityReport(this.activityReport.value);
       this.isActivityReportUpdated.emit(true);
     } else {
       this.activityReport.patchValue({
         id: activityReports ? activityReports.length : 0,
       });
-      this.store.dispatch(
-        addActivityReport({ report: this.activityReport.value })
-      );
+
+      addActivityReport(this.activityReport.value);
       this.activityReport.reset();
     }
 

@@ -1,46 +1,48 @@
-.form-container {
-    padding: 2rem;
+@import '../../../_variables';
 
-    form {
+.form-container {
+  padding: 2rem;
+
+  form {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    width: clamp(30rem, 50vw, 50rem);
+
+    select {
+      width: 100%;
+    }
+
+    >div {
+      display: flex;
+      gap: 1rem;
+      width: -webkit-fill-available;
+
+      >div {
         display: flex;
         flex-direction: column;
-        gap: 1rem;
-        width: clamp(30rem, 50vw, 50rem);
+        width: inherit;
+      }
 
-        select {
-            width: 100%;
-        }
-
-        >div {
-            display: flex;
-            gap: 1rem;
-            width: -webkit-fill-available;
-
-            >div {
-                display: flex;
-                flex-direction: column;
-                width: inherit;
-            }
-
-            input {
-                width: inherit;
-            }
-        }
+      input {
+        width: inherit;
+      }
     }
+  }
 
-    .agents-container {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 1rem;
+  .agents-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
 
-        >div {
-            padding: 0 2rem;
-            border-radius: 0.5rem;
-            border: 0.2rem solid black;
-        }
+    >div {
+      padding: 0 2rem;
+      border-radius: 0.5rem;
+      border: 0.2rem solid $blue;
     }
+  }
 
-    button {
-        width: 100%;
-    }
+  button {
+    width: 100%;
+  }
 }
