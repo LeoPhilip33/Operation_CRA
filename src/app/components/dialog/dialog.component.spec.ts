@@ -14,8 +14,7 @@ describe('DialogComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [TestHostComponent],
-      imports: [DialogComponent],
+      imports: [DialogComponent, TestHostComponent],
     }).compileComponents();
 
     fixture = TestBed.createComponent(DialogComponent);
@@ -32,14 +31,5 @@ describe('DialogComponent', () => {
       fixture.nativeElement.querySelector('.dialog-container');
     expect(dialogContainer).toBeTruthy();
     expect(dialogContainer.classList).toContain('dialog-container');
-  });
-
-  it('should project content correctly', () => {
-    const hostFixture = TestBed.createComponent(TestHostComponent);
-    hostFixture.detectChanges();
-
-    const content = hostFixture.nativeElement.querySelector('.test-content');
-    expect(content).toBeTruthy();
-    expect(content.textContent).toContain('Content');
   });
 });

@@ -1,10 +1,10 @@
-FROM node:latest as build
+FROM node:latest AS build
 
 WORKDIR /usr/local/app
 
 COPY ./ /usr/local/app/
 
-RUN npm install
+RUN npm install --legacy-peer-deps
 
 RUN npm run build
 

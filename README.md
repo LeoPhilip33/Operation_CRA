@@ -1,5 +1,7 @@
 # Opération CRA
 
+![alt text](introduction.png)
+
 ## Contexte
 
 L'application "Opération CRA" a été développée pour Groupama Gan Vie dans le but de gérer les comptes rendus d'activité (CRA) de leurs agents spéciaux. Cette application Angular permet de suivre les efforts des agents sur différents projets, de gérer leurs congés et d'ajouter de nouveaux agents selon les besoins.
@@ -65,13 +67,78 @@ Le projet a également été dockerisé. Voici les étapes pour lancer le projet
 
 5. Accédez à l’application dockérisé via votre navigateur à l’adresse [http://localhost:8080](http://localhost:8080)
 
+# Test Unitaires
+Ce projet inclut des tests unitaires pour garantir le bon fonctionnement des composants. Les tests sont écrits en utilisant le framework Jasmine et exécutés avec Karma.
+
+```bash
+ng tests
+```
+
+![alt text](tests.png)
+
+AgentFormComponent
+- should display error message when lastName is invalid
+- should add agent when form is valid
+- should display error message when firstName is invalid
+
+LeaveComponent
+- should render the header component
+- should have a container with class "container-leave"
+- should render the leave form component
+- LeaveFormComponent
+- should call onSubmit when form is submitted
+
+ActivityReportFormComponent
+- should display "Modifier une activité" when an activity report is selected
+- should display error message when agentId is invalid
+- should display error message when project is invalid
+- should call onSubmit when form is submitted
+- should display "Reporter une activité" when no activity report is selected
+
+AgentsComponent
+- should contain container-agents class
+- should have app-agent-form inside container-agents
+- should render HeaderComponent
+- should render AgentFormComponent
+
+HomeComponent
+- should render the list of leaves
+- should render the list of activity reports
+- should close the dialog when the close button is clicked
+- should render the header component
+- should render the list of agents
+- should render the calendar component
+
+HeaderComponent
+- should navigate to "agents" when clicking the Agents link
+- should contain navigation links
+- should navigate to "leave" when clicking the Leave link
+- should navigate to "activity-report" when clicking the Activity Report link
+- should not have "active" class on inactive routes
+- should add "active" class when on the current route
+
+CalendarComponent
+- should emit viewLeave event when viewAgentLeave is called
+- should return the correct border color for a legend
+- should emit viewActivity event when viewCra is called
+- should load days for the current month
+- should return the correct background color for a legend
+- should create
+
+DialogComponent
+- should render the container with the correct class
+- should create
+
+ActivityReportFormComponent
+- should display error message when agentId is invalid
+- should display error message when project is invalid
+- should display "Modifier une activité" when an activity report is selected
+- should display "Reporter une activité" when no activity report is selected
+- should add activity report when form is valid
+- should call onSubmit when form is submitted
 
 ## Tests End To End
 Les tests E2E garantissent que l'application fonctionne correctement du point de vue de l'utilisateur. Ils simulent des scénarios réels pour vérifier les interactions et les fonctionnalités globales. C'est pourquoi j'ai pris l'initiative d'en rédiger quelques-uns.
 [https://github.com/LeoPhilip33/playwright-cra](https://github.com/LeoPhilip33/playwright-cra)
 
-
-## Remerciements
-Je vous remercie d’avoir pris le temps de considérer ma candidature pour ce poste. Je suis très enthousiaste à l’idée de rejoindre votre équipe et de contribuer à vos projets. Si vous avez besoin d’être convaincu, je serais ravi de vous montrer un autre projet que j’ai réalisé avec Angular en front-end. N’hésitez pas à me contacter pour toute question ou pour organiser une démonstration.
-
-Merci encore pour cette opportunité et au plaisir de collaborer avec vous.
+![alt text](playwright.png)

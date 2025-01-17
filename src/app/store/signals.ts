@@ -15,19 +15,19 @@ export const initialState: AppState = {
       id: 0,
       lastName: 'Doe',
       firstName: 'John',
-      leaveBalance: 5,
+      leaveBalance: 1,
     },
     {
       id: 1,
       lastName: 'Philip',
       firstName: 'Léo',
-      leaveBalance: 5,
+      leaveBalance: 1,
     },
     {
       id: 2,
       lastName: 'Dupont',
       firstName: 'Jean',
-      leaveBalance: 5,
+      leaveBalance: 3,
     },
   ],
   activityReports: [

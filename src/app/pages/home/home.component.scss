@@ -1,4 +1,4 @@
-@import '../../../_variables';
+@use '../../../_variables' as *;
 
 .container-component {
   position: relative;
@@ -10,6 +10,10 @@
     padding-left: 2rem;
     padding-right: 2rem;
     width: auto;
+
+    .container-list {
+      width: 20rem;
+    }
 
     app-calendar {
       width: 100%;

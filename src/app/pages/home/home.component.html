@@ -1,7 +1,7 @@
 <div class="container-component">
   <app-header></app-header>
   <div class="container-page">
-    <div>
+    <div class="container-list">
       <h1>Vue liste</h1>
       <div class="list-container">
         <div>
@@ -17,9 +17,10 @@
           @for (report of activityReports(); track $index) {
           <p (click)="computeViewActivity(report)">
             {{ getAgentById(report.agentId)?.firstName }}
-            {{ getAgentById(report.agentId)?.lastName }} -
-            {{ report.project }} ({{ report.startDate | date : "dd-MM-yyyy" }} -
-            {{ report.endDate | date : "dd-MM-yyyy" }})
+            {{ getAgentById(report.agentId)?.lastName }} - {{ report.project }}
+            <br />
+            {{ report.startDate | date : "dd-MM-yyyy" }} -
+            {{ report.endDate | date : "dd-MM-yyyy" }}
           </p>
           }
         </div>
@@ -27,13 +28,12 @@
         <h2>Absences</h2>
         <div>
           @for (leave of leaves(); track $index) {
-          <p></p>
           <p (click)="computeViewLeave(leave)">
             {{ getAgentById(leave.agentId)?.firstName }}
-            {{ getAgentById(leave.agentId)?.lastName }} - {{ leave.type }} ({{
-              leave.startDate | date : "dd-MM-yyyy"
-            }}
-            - {{ leave.endDate | date : "dd-MM-yyyy" }})
+            {{ getAgentById(leave.agentId)?.lastName }} - {{ leave.type }}
+            <br />
+            {{ leave.startDate | date : "dd-MM-yyyy" }} -
+            {{ leave.endDate | date : "dd-MM-yyyy" }}
           </p>
           }
         </div>

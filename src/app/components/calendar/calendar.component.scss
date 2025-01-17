@@ -1,4 +1,4 @@
-@import '../../../_variables';
+@use '../../../_variables' as *;
 
 .calendar-controls {
   display: flex;
@@ -8,6 +8,12 @@
   padding: 0.5rem;
   background-color: $white;
   border-bottom: 1px solid $white;
+  border-radius: 0.3rem 0.3rem 0 0;
+
+  button {
+    padding: 0.3rem 0.8rem;
+    font-size: 1.2rem;
+  }
 }
 
 .calendar {
@@ -16,7 +22,6 @@
   width: 100%;
   height: 80vh;
   border: 1px solid $white;
-  border-radius: 4px;
   box-sizing: border-box;
 
   .calendar-header {
@@ -50,7 +55,7 @@
       background-color: #f0f0ff;
 
       &.today {
-        background-color: #e0e0e0;
+        background-color: $white;
       }
 
       .container-items {
@@ -63,12 +68,18 @@
           padding: 0.5rem;
           border-left: 1px solid red;
           background-color: #ffc6c6;
+          transition: 0.2s;
+
+          &:hover {
+            transform: scale(1.02);
+            transition: 0.1s;
+          }
 
           >p {
             overflow: hidden;
             text-overflow: ellipsis;
             margin: 0;
-            font-size: 0.7rem;
+            font-size: 0.9rem;
             width: 100%;
           }
         }

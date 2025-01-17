@@ -4,7 +4,7 @@
     [attr.disabled]="isPrevMonthDisabled() ? true : null"
     [ngClass]="{ disabled: isPrevMonthDisabled() }"
   >
-    Avant
+    ←
   </button>
   <span>{{ format(currentMonth) }}</span>
   <button
@@ -12,7 +12,7 @@
     [attr.disabled]="isNextMonthDisabled() ? true : null"
     [ngClass]="{ disabled: isNextMonthDisabled() }"
   >
-    Après
+    →
   </button>
 </div>
 
@@ -40,7 +40,9 @@
           (click)="viewAgentLeave(leave)"
         >
           @if(getAgentById(leave.agentId); as agent) {
-          <p>{{ agent.lastName }} {{ agent.firstName }} - En congé</p>
+          <p>
+            <b>{{ agent.lastName }} {{ agent.firstName }} </b> - En congé
+          </p>
           }
         </div>
         } @for (activity of getActivityForDay(day); track $index) {
@@ -55,7 +57,8 @@
         >
           @if(getAgentById(activity.agentId); as agent) {
           <p>
-            {{ agent.firstName }} {{ agent.lastName }} - {{ activity.project }}
+            <b> {{ agent.firstName }} {{ agent.lastName }} </b> -
+            {{ activity.project }}
           </p>
           }
         </div>

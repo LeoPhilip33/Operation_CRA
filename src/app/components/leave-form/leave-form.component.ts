@@ -48,7 +48,7 @@ export class LeaveFormComponent implements OnInit {
       {
         id: [0],
         agentId: [null, Validators.required],
-        startDate: [null, Validators.required],
+        startDate: [formatDateToISO(new Date()), Validators.required],
         endDate: [null, Validators.required],
         type: [null, Validators.required],
       },
@@ -203,7 +203,6 @@ export class LeaveFormComponent implements OnInit {
 
       if (!agent) {
         this.errorMessage = 'Agent introuvable.';
-        throw new Error(this.errorMessage);
       }
 
       const isSickLeave = type === 'sick';
@@ -268,8 +267,7 @@ export class LeaveFormComponent implements OnInit {
           !isSickLeave &&
           !this.checkLeaveBalance(agentId, startDateObj, endDateObj, agents)
         ) {
-          this.errorMessage = `Le solde de congés de l'agent est insuffisant pour la période demandée. Congés restants : ${agent.leaveBalance} jours.`;
-          throw new Error(this.errorMessage);
+          this.errorMessage = `Le solde de congés de l'agent est insuffisant pour la période demandée. Congés restants : ${agent?.leaveBalance} jours.`;
         }
         updatedAgents = agents.map((a) => {
           if (Number(a.id) === Number(agentId)) {

@@ -49,7 +49,7 @@ export class ActivityReportFormComponent implements OnInit {
         id: [0],
         agentId: [null, Validators.required],
         project: ['', [Validators.required, Validators.minLength(3)]],
-        startDate: [null, Validators.required],
+        startDate: [formatDateToISO(new Date()), Validators.required],
         endDate: [null, Validators.required],
         activity: ['', [Validators.required, Validators.minLength(10)]],
       },
@@ -184,7 +184,6 @@ export class ActivityReportFormComponent implements OnInit {
     ) {
       this.errorMessage =
         'Les dates chevauchent une période de congé existante.';
-      throw new Error(this.errorMessage);
     }
   }
 
