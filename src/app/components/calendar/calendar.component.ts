@@ -10,13 +10,17 @@ import {
   isWithinInterval,
   startOfDay,
   endOfDay,
+  isToday,
 } from 'date-fns';
 import { Legend } from '../../interfaces/legend';
 import { Agent } from '../../interfaces/agent';
 import { ActivityReport } from '../../interfaces/activity-report';
 import { Leave } from '../../interfaces/leave';
 import { AgentStatus } from '../../enum/agentStatus';
-import { fr } from 'date-fns/locale';
+import {
+  formatDateWithCapitalizedMonth,
+  formatDay,
+} from '../../utils/date.util';
 
 @Component({
   selector: 'app-calendar',
@@ -74,8 +78,8 @@ export class CalendarComponent implements OnInit {
     }
   }
 
-  format(date: Date): string {
-    return format(date, 'MMMM yyyy', { locale: fr });
+  formatDateWithCapitalizedMonth(date: Date): string {
+    return formatDateWithCapitalizedMonth(date);
   }
 
   getBackGroundColor(element: string): string {
@@ -105,12 +109,11 @@ export class CalendarComponent implements OnInit {
   }
 
   formatDay(date: Date): string {
-    return format(date, 'd');
+    return formatDay(date);
   }
 
   isToday(date: Date): boolean {
-    const today = new Date();
-    return format(date, 'yyyy-MM-dd') === format(today, 'yyyy-MM-dd');
+    return isToday(date);
   }
 
   getAgentById(agentId: number): Agent | undefined {

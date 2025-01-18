@@ -6,7 +6,7 @@
   >
     ←
   </button>
-  <span>{{ format(currentMonth) }}</span>
+  <span>{{ formatDateWithCapitalizedMonth(currentMonth) }}</span>
   <button
     (click)="nextMonth()"
     [attr.disabled]="isNextMonthDisabled() ? true : null"
@@ -18,7 +18,7 @@
 
 <div class="calendar">
   <div class="calendar-header">
-    @for (day of ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']; track
+    @for (day of ['Dim', 'Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam']; track
     $index) {
     <p>{{ day }}</p>
     }
